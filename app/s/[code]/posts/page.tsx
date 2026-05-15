@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useSharedPosts } from "@/lib/hooks/useSharedPosts";
 import { useParticipants } from "@/lib/hooks/useParticipants";
+import BottomNav from "@/components/bottom-nav";
 import type { SharedPost, PostType } from "@/lib/types/database";
 
 type Session = {
@@ -94,36 +94,18 @@ function PostsView({
   }, [participants]);
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-12">
+    <main className="min-h-screen bg-slate-50 pb-20">
       <div className="mx-auto max-w-md">
         <header className="border-b border-slate-200 bg-white px-5 py-3">
-          <div className="flex items-baseline justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold tracking-widest text-emerald-700">
-                共有タイムライン
-              </p>
-              <h1 className="mt-1 text-lg font-bold text-slate-900">
-                {session.name}
-              </h1>
-              <p className="mt-0.5 text-xs text-slate-500">
-                コード {code} / フェーズ {session.phase}
-              </p>
-            </div>
-            <div className="flex flex-shrink-0 flex-col items-end gap-1 text-xs">
-              <Link
-                href={`/s/${code}/mission`}
-                className="text-emerald-700 underline"
-              >
-                マイ
-              </Link>
-              <Link
-                href={`/s/${code}/board`}
-                className="text-emerald-700 underline"
-              >
-                全体
-              </Link>
-            </div>
-          </div>
+          <p className="text-xs font-semibold tracking-widest text-emerald-700">
+            共有タイムライン
+          </p>
+          <h1 className="mt-1 text-lg font-bold text-slate-900">
+            {session.name}
+          </h1>
+          <p className="mt-0.5 text-xs text-slate-500">
+            コード {code} / フェーズ {session.phase}
+          </p>
         </header>
 
         <div className="space-y-4 px-5 py-5">
@@ -131,6 +113,8 @@ function PostsView({
           <Timeline posts={posts} nameById={nameById} />
         </div>
       </div>
+
+      <BottomNav code={code} sessionId={session.id} />
     </main>
   );
 }

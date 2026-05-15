@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useStepProgress } from "@/lib/hooks/useStepProgress";
 import { useParticipants } from "@/lib/hooks/useParticipants";
+import BottomNav from "@/components/bottom-nav";
 import stepsData from "@/data/steps.json";
 
 type Session = {
@@ -102,7 +103,7 @@ function BoardView({ session, code }: { session: Session; code: string }) {
   }, [participants]);
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-12">
+    <main className="min-h-screen bg-slate-50 pb-20">
       <div className="mx-auto max-w-md">
         <header className="border-b border-slate-200 bg-white px-5 py-3">
           <div className="flex items-baseline justify-between gap-3">
@@ -117,26 +118,12 @@ function BoardView({ session, code }: { session: Session; code: string }) {
                 コード {code} / フェーズ {session.phase}
               </p>
             </div>
-            <div className="flex flex-shrink-0 flex-col items-end gap-1 text-xs">
-              <Link
-                href={`/s/${code}/mission`}
-                className="text-emerald-700 underline"
-              >
-                マイ
-              </Link>
-              <Link
-                href={`/s/${code}/posts`}
-                className="text-emerald-700 underline"
-              >
-                共有
-              </Link>
-              <Link
-                href={`/s/${code}/finish`}
-                className="text-emerald-700 underline"
-              >
-                振り返り
-              </Link>
-            </div>
+            <Link
+              href={`/s/${code}/finish`}
+              className="flex-shrink-0 text-xs text-emerald-700 underline"
+            >
+              振り返り
+            </Link>
           </div>
         </header>
 
@@ -249,6 +236,8 @@ function BoardView({ session, code }: { session: Session; code: string }) {
           })}
         </div>
       </div>
+
+      <BottomNav code={code} sessionId={session.id} />
     </main>
   );
 }

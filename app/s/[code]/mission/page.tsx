@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useStepProgress } from "@/lib/hooks/useStepProgress";
 import { useParticipants } from "@/lib/hooks/useParticipants";
+import BottomNav from "@/components/bottom-nav";
 import stepsData from "@/data/steps.json";
 import type { StepStatus } from "@/lib/types/database";
 
@@ -220,7 +221,7 @@ function MissionView({
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-40">
+    <main className="min-h-screen bg-slate-50 pb-52">
       <div className="mx-auto max-w-md">
         <header className="border-b border-slate-200 bg-white px-5 py-3">
           <div className="flex items-center gap-3">
@@ -236,20 +237,6 @@ function MissionView({
               <p className="text-xs text-slate-500">
                 仲間 {sameRoleCount}人 / {session.name} ({code})
               </p>
-            </div>
-            <div className="flex flex-shrink-0 flex-col items-end gap-1 text-xs">
-              <Link
-                href={`/s/${code}/board`}
-                className="text-emerald-700 underline"
-              >
-                全体
-              </Link>
-              <Link
-                href={`/s/${code}/posts`}
-                className="text-emerald-700 underline"
-              >
-                共有
-              </Link>
             </div>
           </div>
         </header>
@@ -350,7 +337,7 @@ function MissionView({
       </div>
 
       {current && (
-        <div className="fixed inset-x-0 bottom-0 border-t border-slate-200 bg-white">
+        <div className="fixed inset-x-0 bottom-14 z-10 border-t border-slate-200 bg-white">
           <div className="mx-auto max-w-md p-4">
             <button
               type="button"
@@ -386,7 +373,7 @@ function MissionView({
       )}
 
       {showTrouble && current && (
-        <div className="fixed inset-0 z-10 flex items-end justify-center bg-slate-900/50 sm:items-center">
+        <div className="fixed inset-0 z-30 flex items-end justify-center bg-slate-900/50 sm:items-center">
           <div className="w-full max-w-md rounded-t-2xl bg-white p-5 shadow-lg sm:rounded-2xl">
             <h2 className="text-lg font-bold text-slate-900">
               何が困っていますか?
@@ -423,6 +410,8 @@ function MissionView({
           </div>
         </div>
       )}
+
+      <BottomNav code={code} sessionId={session.id} />
     </main>
   );
 }
