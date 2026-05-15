@@ -17,6 +17,16 @@ export const metadata: Metadata = {
   title: "避難所サポート",
   description:
     "QRを読むだけで、知識ゼロでも避難所が立ち上がる。役割分担と進捗共有で住民協働運営を支援する MVP。",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "避難所",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
