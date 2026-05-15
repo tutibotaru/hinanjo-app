@@ -293,6 +293,12 @@ function MissionView({
             <p className="mt-2 text-sm text-slate-600">
               次のフェーズが始まるまでお待ちください。
             </p>
+            <Link
+              href={`/s/${code}/finish`}
+              className="mt-6 inline-block rounded-lg border border-emerald-300 bg-emerald-50 px-5 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
+            >
+              振り返りを見る →
+            </Link>
           </section>
         ) : (
           <section className="px-5 py-6">

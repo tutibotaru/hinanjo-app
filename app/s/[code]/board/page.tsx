@@ -130,6 +130,12 @@ function BoardView({ session, code }: { session: Session; code: string }) {
               >
                 共有
               </Link>
+              <Link
+                href={`/s/${code}/finish`}
+                className="text-emerald-700 underline"
+              >
+                振り返り
+              </Link>
             </div>
           </div>
         </header>
