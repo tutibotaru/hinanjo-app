@@ -74,6 +74,346 @@
         { "label": "高齢者の代筆が必要", "action": "応援要請を投稿" }
       ],
       "depends_on": ["ga-001"]
+    },
+    {
+      "id": "ga-003",
+      "role": "general-affairs",
+      "phase": 1,
+      "order": 3,
+      "title": "最初の避難者を受け付ける",
+      "duration_minutes": 5,
+      "instructions": [
+        "名簿に氏名・住所・人数を記入",
+        "居住スペースの場所を案内",
+        "要配慮者かどうかを確認"
+      ],
+      "completion_condition": "1人目の登録が完了している",
+      "troubles": [
+        { "label": "名前を言いたくない", "action": "ニックネームで受付OK" },
+        { "label": "子連れで手が回らない", "action": "別スタッフに一時預かり依頼" },
+        { "label": "質問が多くて時間がかかる", "action": "後で詳細を確認する" }
+      ],
+      "depends_on": ["ga-002"]
+    },
+    {
+      "id": "ga-004",
+      "role": "general-affairs",
+      "phase": 1,
+      "order": 4,
+      "title": "要配慮者を救護班に引き継ぐ",
+      "duration_minutes": 3,
+      "instructions": [
+        "高齢・障害・乳幼児を確認",
+        "救護衛生班の場所を案内",
+        "名簿に「要配慮」と記録"
+      ],
+      "completion_condition": "救護班への引き継ぎが完了",
+      "troubles": [
+        { "label": "救護班がまだ立ち上がってない", "action": "近くに座らせて一時待機" },
+        { "label": "本人が支援を断る", "action": "状況だけ記録に残す" },
+        { "label": "複数人が同時に来た", "action": "緊急度で優先順位を判断" }
+      ],
+      "depends_on": ["ga-003"]
+    },
+    {
+      "id": "ga-005",
+      "role": "general-affairs",
+      "phase": 2,
+      "order": 5,
+      "title": "受付列の流れを整える",
+      "duration_minutes": 5,
+      "instructions": [
+        "並ぶ位置にテープで線を引く",
+        "進行スタッフを1人配置",
+        "列の最後尾に看板を置く"
+      ],
+      "completion_condition": "整然と列ができている",
+      "troubles": [
+        { "label": "テープがない", "action": "段ボールや椅子で区切る" },
+        { "label": "人が殺到している", "action": "番号札を配って整理" },
+        { "label": "スペースが狭い", "action": "屋外まで列を誘導" }
+      ],
+      "depends_on": ["ga-003"]
+    },
+    {
+      "id": "ga-006",
+      "role": "general-affairs",
+      "phase": 2,
+      "order": 6,
+      "title": "受付シフトを組む",
+      "duration_minutes": 5,
+      "instructions": [
+        "受付担当者を3名以上確保",
+        "2時間ごとの交代制を決める",
+        "シフト表に交代時刻を記入"
+      ],
+      "completion_condition": "シフト表が完成している",
+      "troubles": [
+        { "label": "人手が足りない", "action": "全体に応援要請を投稿" },
+        { "label": "経験者がいない", "action": "ペアで研修しながら配置" },
+        { "label": "夜間担当が決まらない", "action": "翌朝に再調整と決める" }
+      ],
+      "depends_on": ["ga-005"]
+    },
+    {
+      "id": "fa-001",
+      "role": "facility",
+      "phase": 0,
+      "order": 1,
+      "title": "建物の被害を目視点検する",
+      "duration_minutes": 5,
+      "instructions": [
+        "外壁のひび割れを確認",
+        "天井・梁の落下物をチェック",
+        "床の傾きやガラス散乱を確認"
+      ],
+      "completion_condition": "全体の安全状況を把握できた",
+      "troubles": [
+        { "label": "大きなひびがある", "action": "リーダーに即報告" },
+        { "label": "一部立入禁止が必要", "action": "次のステップで区画" },
+        { "label": "暗くて見えない", "action": "懐中電灯を用意する" }
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "fa-002",
+      "role": "facility",
+      "phase": 0,
+      "order": 2,
+      "title": "使えない場所を立入禁止にする",
+      "duration_minutes": 5,
+      "instructions": [
+        "危険箇所をテープや張り紙で囲む",
+        "「立入禁止」の看板を置く",
+        "全員に口頭で周知する"
+      ],
+      "completion_condition": "危険箇所が明示されている",
+      "troubles": [
+        { "label": "範囲が広すぎる", "action": "通路だけ確保する" },
+        { "label": "表示物がない", "action": "紙に手書きで貼る" },
+        { "label": "子どもが入りそう", "action": "大人が交代で見張る" }
+      ],
+      "depends_on": ["fa-001"]
+    },
+    {
+      "id": "fa-003",
+      "role": "facility",
+      "phase": 0,
+      "order": 3,
+      "title": "電気・水道・ガスを確認する",
+      "duration_minutes": 3,
+      "instructions": [
+        "電気が点くか確認",
+        "水道の蛇口を開けて出るか確認",
+        "ガス臭がないかチェック"
+      ],
+      "completion_condition": "3つの状態を把握できた",
+      "troubles": [
+        { "label": "ガス臭がする", "action": "元栓を閉めて即換気" },
+        { "label": "電気がつかない", "action": "懐中電灯を準備" },
+        { "label": "水道が出ない", "action": "備蓄水の量を確認" }
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "fa-004",
+      "role": "facility",
+      "phase": 1,
+      "order": 4,
+      "title": "居住スペースを区画する",
+      "duration_minutes": 5,
+      "instructions": [
+        "ブルーシートで区画を作る",
+        "1家族に最低2m×2mを確保",
+        "通路を1m以上空ける"
+      ],
+      "completion_condition": "区画が見える化されている",
+      "troubles": [
+        { "label": "シートがない", "action": "段ボールで仕切る" },
+        { "label": "人数が多すぎる", "action": "通路を狭めて調整" },
+        { "label": "プライバシーが不足", "action": "高さのある仕切り検討" }
+      ],
+      "depends_on": ["fa-002"]
+    },
+    {
+      "id": "fa-005",
+      "role": "facility",
+      "phase": 1,
+      "order": 5,
+      "title": "要配慮者ゾーンを別に確保",
+      "duration_minutes": 5,
+      "instructions": [
+        "入口に近い場所を選ぶ",
+        "静かで温度差の少ない区画にする",
+        "救護班と隣接させる"
+      ],
+      "completion_condition": "要配慮者用エリアができている",
+      "troubles": [
+        { "label": "静かな場所がない", "action": "カーテンで仕切る" },
+        { "label": "場所が分かりにくい", "action": "大きく案内表示" },
+        { "label": "救護班と離れる", "action": "連絡係を1人配置" }
+      ],
+      "depends_on": ["fa-004"]
+    },
+    {
+      "id": "fa-006",
+      "role": "facility",
+      "phase": 2,
+      "order": 6,
+      "title": "トイレの場所を決めて掲示",
+      "duration_minutes": 5,
+      "instructions": [
+        "既設トイレの使用可否を確認",
+        "男女別の表示を作る",
+        "場所への案内矢印を貼る"
+      ],
+      "completion_condition": "全員がトイレ位置を把握",
+      "troubles": [
+        { "label": "トイレが壊れている", "action": "仮設トイレを手配" },
+        { "label": "数が足りない", "action": "時間制で対応" },
+        { "label": "夜間が暗い", "action": "懐中電灯を備える" }
+      ],
+      "depends_on": ["fa-001"]
+    },
+    {
+      "id": "fa-007",
+      "role": "facility",
+      "phase": 2,
+      "order": 7,
+      "title": "火気禁止の表示を出す",
+      "duration_minutes": 3,
+      "instructions": [
+        "屋外に喫煙場所を1ヶ所決める",
+        "入口に火気禁止の張り紙を貼る",
+        "灰皿を用意する"
+      ],
+      "completion_condition": "喫煙場所と禁止表示が見える",
+      "troubles": [
+        { "label": "喫煙場所が確保できない", "action": "時間帯を区切って対応" },
+        { "label": "灰皿がない", "action": "缶を代用する" },
+        { "label": "ルールが守られない", "action": "担当者が巡回" }
+      ],
+      "depends_on": ["fa-006"]
+    },
+    {
+      "id": "in-001",
+      "role": "information",
+      "phase": 1,
+      "order": 1,
+      "title": "本部への第一報を入れる",
+      "duration_minutes": 3,
+      "instructions": [
+        "自治体本部の連絡先を確認",
+        "避難所開設を伝える",
+        "連絡担当者の名前を記録"
+      ],
+      "completion_condition": "本部に第一報が届いている",
+      "troubles": [
+        { "label": "電話がつながらない", "action": "メールやLINEで代替" },
+        { "label": "連絡先が分からない", "action": "役所代表番号にかける" },
+        { "label": "留守電になる", "action": "折り返し依頼を残す" }
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "in-002",
+      "role": "information",
+      "phase": 1,
+      "order": 2,
+      "title": "館内の掲示板を作る",
+      "duration_minutes": 5,
+      "instructions": [
+        "入口近くに掲示板を設置",
+        "「最新情報」「お知らせ」欄を作る",
+        "ペンとマジックを用意"
+      ],
+      "completion_condition": "掲示板が使える状態",
+      "troubles": [
+        { "label": "場所がない", "action": "壁にマスキングテープ" },
+        { "label": "紙がない", "action": "段ボールに直接書く" },
+        { "label": "雨で濡れる", "action": "屋内側に移動" }
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "in-003",
+      "role": "information",
+      "phase": 1,
+      "order": 3,
+      "title": "避難者数を本部に報告する",
+      "duration_minutes": 5,
+      "instructions": [
+        "受付名簿から人数を集計",
+        "男女別・要配慮者数も把握",
+        "本部に電話やメールで報告"
+      ],
+      "completion_condition": "第1回の人数報告が完了",
+      "troubles": [
+        { "label": "名簿が集計できない", "action": "概数で先に報告" },
+        { "label": "通信が不安定", "action": "紙で記録し再送" },
+        { "label": "数字が変わる", "action": "時刻付きで送る" }
+      ],
+      "depends_on": ["in-001"]
+    },
+    {
+      "id": "in-004",
+      "role": "information",
+      "phase": 1,
+      "order": 4,
+      "title": "最新情報を掲示する",
+      "duration_minutes": 3,
+      "instructions": [
+        "本部からの情報をメモする",
+        "掲示板の最新情報欄に貼る",
+        "時刻と発信源を明記"
+      ],
+      "completion_condition": "最新情報が見える化されている",
+      "troubles": [
+        { "label": "情報源が不明", "action": "本部に再確認" },
+        { "label": "デマっぽい話", "action": "「確認待ち」と書く" },
+        { "label": "古い情報が残る", "action": "時刻で並べ替え" }
+      ],
+      "depends_on": ["in-002"]
+    },
+    {
+      "id": "in-005",
+      "role": "information",
+      "phase": 2,
+      "order": 5,
+      "title": "館内アナウンスを行う",
+      "duration_minutes": 3,
+      "instructions": [
+        "拡声器やマイクを準備",
+        "伝える内容を3項目までに絞る",
+        "ゆっくり2回繰り返す"
+      ],
+      "completion_condition": "全員に伝わったと確認",
+      "troubles": [
+        { "label": "拡声器がない", "action": "大声で各区画回る" },
+        { "label": "聞こえない人がいる", "action": "文字でも掲示" },
+        { "label": "外国人がいる", "action": "簡単な日本語で" }
+      ],
+      "depends_on": ["in-002"]
+    },
+    {
+      "id": "in-006",
+      "role": "information",
+      "phase": 2,
+      "order": 6,
+      "title": "問い合わせ窓口になる",
+      "duration_minutes": 5,
+      "instructions": [
+        "窓口担当を1名決める",
+        "取材エリアを別に設定",
+        "答えてよい範囲を確認"
+      ],
+      "completion_condition": "窓口担当者が常駐できる",
+      "troubles": [
+        { "label": "取材が多すぎる", "action": "1日1回会見にする" },
+        { "label": "個人情報を聞かれる", "action": "答えない方針を伝える" },
+        { "label": "担当者が不在になる", "action": "代理を立てる" }
+      ],
+      "depends_on": ["in-001"]
     }
   ]
 }
