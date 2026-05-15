@@ -1,12 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Home() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-slate-50 px-5 py-8 sm:px-8">
+          <p className="mx-auto max-w-md text-sm text-slate-500">読み込み中…</p>
+        </main>
+      }
+    >
+      <HomeForm />
+    </Suspense>
+  );
+}
+
+function HomeForm() {
   const router = useRouter();
-  const [code, setCode] = useState("");
+  const searchParams = useSearchParams();
+  const initialCode = (searchParams.get("code") ?? "").toUpperCase();
+  const [code, setCode] = useState(initialCode);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
