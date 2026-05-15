@@ -1,0 +1,79 @@
+{
+  "$schema_version": "0.1",
+  "roles": [
+    {
+      "id": "general-affairs",
+      "name": "総務班",
+      "short_name": "総務",
+      "description": "受付・名簿の担当",
+      "mission": "避難者が安心して登録でき、誰がいるか把握できる状態をつくる。",
+      "color": "#1D9E75",
+      "appears_from_phase": 0
+    },
+    {
+      "id": "facility",
+      "name": "施設班",
+      "short_name": "施設",
+      "description": "スペース割り・安全確認の担当",
+      "mission": "建物が安全に使えるか確認し、避難者が休むスペースを作る。",
+      "color": "#F5A623",
+      "appears_from_phase": 0
+    },
+    {
+      "id": "information",
+      "name": "情報班",
+      "short_name": "情報",
+      "description": "本部連絡・情報発信の担当",
+      "mission": "自治体本部とつながり、避難所の中で正しい情報を伝える。",
+      "color": "#4A90E2",
+      "appears_from_phase": 1
+    }
+  ],
+  "phases": [
+    { "id": 0, "name": "初動", "label": "発災〜15分" },
+    { "id": 1, "name": "開設初期", "label": "15分〜1時間" },
+    { "id": 2, "name": "応急運営", "label": "1〜2時間" }
+  ],
+  "steps": [
+    {
+      "id": "ga-001",
+      "role": "general-affairs",
+      "phase": 0,
+      "order": 1,
+      "title": "受付スペースを決める",
+      "duration_minutes": 5,
+      "instructions": [
+        "入口近くで風雨が当たらない場所を選ぶ",
+        "机1台・椅子2脚を運ぶ",
+        "「受付」の張り紙を貼る"
+      ],
+      "completion_condition": "机が置かれ、看板が見える",
+      "troubles": [
+        { "label": "机がない", "action": "施設班に依頼" },
+        { "label": "場所が決まらない", "action": "リーダーに相談" },
+        { "label": "人手が足りない", "action": "応援要請を投稿" }
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "ga-002",
+      "role": "general-affairs",
+      "phase": 0,
+      "order": 2,
+      "title": "避難者名簿を準備する",
+      "duration_minutes": 3,
+      "instructions": [
+        "名簿用紙またはタブレットを用意",
+        "記入項目を確認(氏名・住所・人数)",
+        "ペンを2本以上揃える"
+      ],
+      "completion_condition": "受付で記入を始められる状態",
+      "troubles": [
+        { "label": "名簿用紙がない", "action": "白紙にメモから開始" },
+        { "label": "記入項目が分からない", "action": "テンプレ表示を確認" },
+        { "label": "高齢者の代筆が必要", "action": "応援要請を投稿" }
+      ],
+      "depends_on": ["ga-001"]
+    }
+  ]
+}
