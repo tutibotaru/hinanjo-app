@@ -40,11 +40,15 @@ const questions = [
 ] as const;
 
 // 訓練結果を見てチューニングする想定の単純重み付け。
-function computeScores(answers: Required<Answers>) {
+// 質問をスキップした場合は answers が空なので 0 として扱う。
+function computeScores(answers: Answers) {
+  const q1 = answers.q1 ?? 0;
+  const q2 = answers.q2 ?? 0;
+  const q3 = answers.q3 ?? 0;
   return {
-    "general-affairs": answers.q1 + answers.q3 * 2,
-    facility: answers.q1 * 2 + answers.q2,
-    information: answers.q2 + answers.q3 * 2,
+    "general-affairs": q1 + q3 * 2,
+    facility: q1 * 2 + q2,
+    information: q2 + q3 * 2,
   } as Record<string, number>;
 }
 
@@ -64,6 +68,7 @@ export default function RolePage() {
   const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [alreadyHasRole, setAlreadyHasRole] = useState(false);
 
   useEffect(() => {
     const code = params.code.toUpperCase();
@@ -72,13 +77,25 @@ export default function RolePage() {
       router.replace(`/s/${code}/nickname`);
       return;
     }
+    let parsed: StoredParticipant;
     try {
-      const parsed = JSON.parse(raw) as StoredParticipant;
+      parsed = JSON.parse(raw) as StoredParticipant;
       if (!parsed.id) throw new Error();
-      setStored(parsed);
     } catch {
       router.replace(`/s/${code}/nickname`);
+      return;
     }
+    setStored(parsed);
+
+    const supabase = createClient();
+    supabase
+      .from("participants")
+      .select("role")
+      .eq("id", parsed.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data?.role) setAlreadyHasRole(true);
+      });
   }, [params.code, router]);
 
   if (!stored) {
@@ -148,6 +165,17 @@ export default function RolePage() {
           <h1 className="mb-8 text-center text-2xl font-bold text-slate-900">
             {q.text}
           </h1>
+          {step === 0 && alreadyHasRole && (
+            <div className="mb-6 text-center">
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                className="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
+              >
+                質問をスキップして役割だけ選ぶ →
+              </button>
+            </div>
+          )}
           <div className="space-y-3">
             {q.options.map((opt) => (
               <button
@@ -178,12 +206,16 @@ export default function RolePage() {
   }
 
   // 推薦 + 選択ステップ
-  const scores = computeScores(answers as Required<Answers>);
+  const skipped =
+    answers.q1 === undefined &&
+    answers.q2 === undefined &&
+    answers.q3 === undefined;
+  const scores = computeScores(answers);
   const roles = stepsData.roles as Role[];
   const sortedRoles = [...roles].sort(
     (a, b) => (scores[b.id] ?? 0) - (scores[a.id] ?? 0),
   );
-  const topId = sortedRoles[0].id;
+  const topId = skipped ? null : sortedRoles[0].id;
 
   return (
     <main className="min-h-screen bg-slate-50 px-5 py-8 sm:px-8">
@@ -194,7 +226,9 @@ export default function RolePage() {
             役割をえらぶ
           </p>
           <h1 className="mt-2 text-2xl font-bold text-slate-900">
-            {stored.nickname} さんへのおすすめ
+            {skipped
+              ? `${stored.nickname} さんの役割`
+              : `${stored.nickname} さんへのおすすめ`}
           </h1>
           <p className="mt-2 text-sm text-slate-600">
             気が変わったら後から変更できます。

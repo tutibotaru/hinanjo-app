@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useStepProgress } from "@/lib/hooks/useStepProgress";
 import { useParticipants } from "@/lib/hooks/useParticipants";
 import BottomNav from "@/components/bottom-nav";
+import TrainingBanner from "@/components/training-banner";
 import stepsData from "@/data/steps.json";
 
 type Session = {
@@ -14,6 +15,7 @@ type Session = {
   name: string;
   qr_code: string;
   phase: number;
+  mode: string;
 };
 type Role = {
   id: string;
@@ -64,7 +66,7 @@ export default function BoardPage() {
       const supabase = createClient();
       const { data: session } = await supabase
         .from("sessions")
-        .select("id, name, qr_code, phase")
+        .select("id, name, qr_code, phase, mode")
         .eq("qr_code", code)
         .maybeSingle();
 
@@ -102,8 +104,14 @@ function BoardView({ session, code }: { session: Session; code: string }) {
     return m;
   }, [participants]);
 
+  async function undoStep(progressId: string) {
+    const supabase = createClient();
+    await supabase.from("step_progress").delete().eq("id", progressId);
+  }
+
   return (
     <main className="min-h-screen bg-slate-50 pb-20">
+      <TrainingBanner mode={session.mode} />
       <div className="mx-auto max-w-md">
         <header className="border-b border-slate-200 bg-white px-5 py-3">
           <div className="flex items-baseline justify-between gap-3">
@@ -118,12 +126,20 @@ function BoardView({ session, code }: { session: Session; code: string }) {
                 コード {code} / フェーズ {session.phase}
               </p>
             </div>
-            <Link
-              href={`/s/${code}/finish`}
-              className="flex-shrink-0 text-xs text-emerald-700 underline"
-            >
-              振り返り
-            </Link>
+            <div className="flex flex-shrink-0 flex-col items-end gap-1 text-xs">
+              <Link
+                href={`/s/${code}/finish`}
+                className="text-emerald-700 underline"
+              >
+                振り返り
+              </Link>
+              <Link
+                href={`/s/${code}/manage`}
+                className="text-emerald-700 underline"
+              >
+                運営
+              </Link>
+            </div>
           </div>
         </header>
 
@@ -226,6 +242,15 @@ function BoardView({ session, code }: { session: Session; code: string }) {
                               </p>
                             )}
                           </div>
+                          {p && (
+                            <button
+                              type="button"
+                              onClick={() => undoStep(p.id)}
+                              className="flex-shrink-0 self-center rounded border border-slate-200 px-2 py-1 text-xs text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                            >
+                              取消
+                            </button>
+                          )}
                         </li>
                       );
                     })}

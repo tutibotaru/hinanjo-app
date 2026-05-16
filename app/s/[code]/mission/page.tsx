@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useStepProgress } from "@/lib/hooks/useStepProgress";
 import { useParticipants } from "@/lib/hooks/useParticipants";
 import BottomNav from "@/components/bottom-nav";
+import TrainingBanner from "@/components/training-banner";
 import stepsData from "@/data/steps.json";
 import type { StepStatus } from "@/lib/types/database";
 
@@ -15,6 +16,7 @@ type Session = {
   name: string;
   qr_code: string;
   phase: number;
+  mode: string;
 };
 type Participant = {
   id: string;
@@ -74,7 +76,7 @@ export default function MissionPage() {
       const [sessionRes, participantRes] = await Promise.all([
         supabase
           .from("sessions")
-          .select("id, name, qr_code, phase")
+          .select("id, name, qr_code, phase, mode")
           .eq("qr_code", code)
           .maybeSingle(),
         supabase
@@ -222,6 +224,7 @@ function MissionView({
 
   return (
     <main className="min-h-screen bg-slate-50 pb-52">
+      <TrainingBanner mode={session.mode} />
       <div className="mx-auto max-w-md">
         <header className="border-b border-slate-200 bg-white px-5 py-3">
           <div className="flex items-center gap-3">
@@ -238,6 +241,12 @@ function MissionView({
                 仲間 {sameRoleCount}人 / {session.name} ({code})
               </p>
             </div>
+            <Link
+              href={`/s/${code}/role`}
+              className="flex-shrink-0 self-center rounded border border-slate-200 px-2 py-1 text-xs text-slate-500 hover:bg-slate-50"
+            >
+              役割変更
+            </Link>
           </div>
         </header>
 

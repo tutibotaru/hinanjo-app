@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useSharedPosts } from "@/lib/hooks/useSharedPosts";
 import { useParticipants } from "@/lib/hooks/useParticipants";
 import BottomNav from "@/components/bottom-nav";
+import TrainingBanner from "@/components/training-banner";
 import type { SharedPost, PostType } from "@/lib/types/database";
 
 type Session = {
@@ -13,6 +14,7 @@ type Session = {
   name: string;
   qr_code: string;
   phase: number;
+  mode: string;
 };
 type StoredParticipant = { id: string; nickname: string };
 
@@ -52,7 +54,7 @@ export default function PostsPage() {
       const supabase = createClient();
       const { data: session } = await supabase
         .from("sessions")
-        .select("id, name, qr_code, phase")
+        .select("id, name, qr_code, phase, mode")
         .eq("qr_code", code)
         .maybeSingle();
       if (!session) {
@@ -95,6 +97,7 @@ function PostsView({
 
   return (
     <main className="min-h-screen bg-slate-50 pb-20">
+      <TrainingBanner mode={session.mode} />
       <div className="mx-auto max-w-md">
         <header className="border-b border-slate-200 bg-white px-5 py-3">
           <p className="text-xs font-semibold tracking-widest text-emerald-700">
