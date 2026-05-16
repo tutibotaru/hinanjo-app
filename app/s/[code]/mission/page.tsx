@@ -40,6 +40,7 @@ type Step = {
   duration_minutes: number;
   instructions: string[];
   completion_condition: string;
+  point?: string;
   troubles: Trouble[];
   depends_on: string[];
 };
@@ -332,6 +333,20 @@ function MissionView({
                 {current.step.completion_condition}
               </p>
             </div>
+
+            {current.step.point && (
+              <div className="mt-3 flex gap-2 rounded-lg border border-sky-200 bg-sky-50 p-3">
+                <span aria-hidden className="text-base leading-none">
+                  💡
+                </span>
+                <div>
+                  <p className="text-xs font-semibold text-sky-700">ポイント</p>
+                  <p className="mt-1 text-sm text-sky-900">
+                    {current.step.point}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {actionError && (
               <p
