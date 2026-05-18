@@ -92,7 +92,18 @@ export default function NicknameForm({
       JSON.stringify({ id: participantId, nickname: trimmed }),
     );
 
-    router.push(`/s/${sessionCode}/role`);
+    // WHY: 既に役割を持つ人がなまえだけ直しに来た場合、役割選択を
+    // やり直させると面倒。役割があれば mission へ直行、無ければ /role へ。
+    const { data: me } = await supabase
+      .from("participants")
+      .select("role")
+      .eq("id", participantId)
+      .maybeSingle();
+    router.push(
+      me?.role
+        ? `/s/${sessionCode}/mission`
+        : `/s/${sessionCode}/role`,
+    );
   }
 
   return (

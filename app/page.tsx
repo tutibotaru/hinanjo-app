@@ -114,14 +114,11 @@ function HomeForm() {
         </form>
 
         <div className="mt-10 border-t border-slate-200 pt-6">
-          <button
-            type="button"
-            disabled
-            className="text-sm text-slate-400"
-            title="次のフェーズで実装"
-          >
-            QRコードを読み取る(準備中)
-          </button>
+          <p className="text-sm leading-relaxed text-slate-500">
+            掲示された QR コードは、スマホのカメラアプリで読み取ると
+            この画面が自動で開き、コードも入ります。うまく読めないときは
+            QR の下に書かれた参加コードを上に入力してください。
+          </p>
         </div>
       </div>
     </main>

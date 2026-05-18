@@ -29,6 +29,11 @@ export default function ManagePage() {
   const [resetArmed, setResetArmed] = useState(false);
   const [copied, setCopied] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  // WHY: 運営パネルはフェーズ変更・進捗リセット等の破壊操作を持つ。
+  // 一般参加者の誤タップ防止のため、コード再入力で意思確認する
+  // (RLS による本来のアクセス制御は別途サーバ側で対応する想定)。
+  const [unlocked, setUnlocked] = useState(false);
+  const [gateInput, setGateInput] = useState("");
 
   const code = params.code.toUpperCase();
 
@@ -152,6 +157,65 @@ export default function ManagePage() {
     return (
       <main className="min-h-screen bg-slate-50 px-5 py-8 sm:px-8">
         <p className="mx-auto max-w-md text-sm text-slate-500">読み込み中…</p>
+      </main>
+    );
+  }
+
+  if (!unlocked) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-5 py-8 sm:px-8">
+        <div className="mx-auto max-w-md">
+          <h1 className="text-xl font-bold text-slate-900">運営パネル</h1>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            この画面では <strong>フェーズ変更・モード切替・進捗リセット</strong>{" "}
+            ができます。運営担当の方だけが開いてください。
+            参加者の方は下のボタンを押さず、ボードに戻ってください。
+          </p>
+          <label
+            htmlFor="gate"
+            className="mt-6 block text-sm font-semibold text-slate-700"
+          >
+            参加コードを入力して開く
+          </label>
+          <input
+            id="gate"
+            type="text"
+            value={gateInput}
+            onChange={(e) => setGateInput(e.target.value.toUpperCase())}
+            placeholder={code}
+            autoCapitalize="characters"
+            autoCorrect="off"
+            spellCheck={false}
+            className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-lg uppercase tracking-widest text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              if (gateInput.trim().toUpperCase() === code) {
+                setMsg(null);
+                setUnlocked(true);
+              } else {
+                setMsg("コードが一致しません。");
+              }
+            }}
+            style={{ minHeight: 52 }}
+            className="mt-3 w-full rounded-lg bg-emerald-600 px-4 py-3 text-base font-bold text-white hover:bg-emerald-700"
+          >
+            運営者として開く
+          </button>
+          {msg && (
+            <p className="mt-3 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+              {msg}
+            </p>
+          )}
+          <Link
+            href={`/s/${code}/board`}
+            style={{ minHeight: 48 }}
+            className="mt-6 flex items-center justify-center rounded-lg border border-slate-300 bg-white text-sm font-semibold text-slate-600 hover:bg-slate-50"
+          >
+            ボードに戻る
+          </Link>
+        </div>
       </main>
     );
   }

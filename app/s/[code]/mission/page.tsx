@@ -238,16 +238,26 @@ function MissionView({
               <p className="text-sm font-bold text-slate-900">
                 {participant.nickname} さん / {role.name}
               </p>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm text-slate-500">
                 仲間 {sameRoleCount}人 / {session.name} ({code})
               </p>
             </div>
-            <Link
-              href={`/s/${code}/role`}
-              className="flex-shrink-0 self-center rounded border border-slate-200 px-2 py-1 text-xs text-slate-500 hover:bg-slate-50"
-            >
-              役割変更
-            </Link>
+            <div className="flex flex-shrink-0 flex-col gap-1">
+              <Link
+                href={`/s/${code}/nickname`}
+                style={{ minHeight: 40 }}
+                className="flex items-center justify-center rounded-md border border-slate-200 px-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+              >
+                なまえ
+              </Link>
+              <Link
+                href={`/s/${code}/role`}
+                style={{ minHeight: 40 }}
+                className="flex items-center justify-center rounded-md border border-slate-200 px-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+              >
+                役割
+              </Link>
+            </div>
           </div>
         </header>
 

@@ -95,6 +95,10 @@ function BoardView({ session, code }: { session: Session; code: string }) {
   const { byStepId } = useStepProgress(session.id);
   const { participants } = useParticipants(session.id);
 
+  // WHY: 取消は他人の完了も消せる破壊操作。1タップ誤爆を防ぐため
+  // 「1回目で対象を armed、2回目で実行」の2段階にする(リセットと同じ作法)。
+  const [armedUndoId, setArmedUndoId] = useState<string | null>(null);
+
   const roles = stepsData.roles as Role[];
   const allSteps = stepsData.steps as Step[];
 
@@ -105,6 +109,11 @@ function BoardView({ session, code }: { session: Session; code: string }) {
   }, [participants]);
 
   async function undoStep(progressId: string) {
+    if (armedUndoId !== progressId) {
+      setArmedUndoId(progressId);
+      return;
+    }
+    setArmedUndoId(null);
     const supabase = createClient();
     await supabase.from("step_progress").delete().eq("id", progressId);
   }
@@ -246,9 +255,19 @@ function BoardView({ session, code }: { session: Session; code: string }) {
                             <button
                               type="button"
                               onClick={() => undoStep(p.id)}
-                              className="flex-shrink-0 self-center rounded border border-slate-200 px-2 py-1 text-xs text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                              onBlur={() =>
+                                setArmedUndoId((cur) =>
+                                  cur === p.id ? null : cur,
+                                )
+                              }
+                              style={{ minHeight: 44 }}
+                              className={`flex-shrink-0 self-center rounded-md border px-3 text-sm font-semibold transition-colors ${
+                                armedUndoId === p.id
+                                  ? "border-rose-400 bg-rose-50 text-rose-700"
+                                  : "border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                              }`}
                             >
-                              取消
+                              {armedUndoId === p.id ? "本当に取消?" : "取消"}
                             </button>
                           )}
                         </li>
