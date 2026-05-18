@@ -35,29 +35,36 @@ export function useStepProgress(sessionId: string | null) {
         setLoading(false);
       });
 
+    // WHY サーバ側 filter を使わない: postgres_changes に
+    // filter:`session_id=eq.X` を付けると、DELETE の old は
+    // (デフォルトの replica identity では)主キーしか持たないため
+    // session_id フィルタで弾かれ、DELETE イベントが届かない
+    // (= 取消・リセットが他者画面に反映されない)。
+    // フィルタを外し、INSERT/UPDATE は session_id で、DELETE は
+    // id でクライアント側に振り分ける(id は全体で一意なので安全)。
     const channel = supabase
       .channel(`step-progress-${sessionId}`)
       .on(
         "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "step_progress",
-          filter: `session_id=eq.${sessionId}`,
-        },
+        { event: "*", schema: "public", table: "step_progress" },
         (payload) => {
           if (cancelled) return;
           setProgress((current) => {
+            if (payload.eventType === "DELETE") {
+              const removedId = (payload.old as { id?: string }).id;
+              if (!removedId) return current;
+              return current.filter((p) => p.id !== removedId);
+            }
+            const row = payload.new as StepProgress;
+            if (row.session_id !== sessionId) return current;
             if (payload.eventType === "INSERT") {
-              return [...current, payload.new as StepProgress];
+              if (current.some((p) => p.id === row.id)) return current;
+              return [...current, row];
             }
             if (payload.eventType === "UPDATE") {
-              const next = payload.new as StepProgress;
-              return current.map((p) => (p.id === next.id ? next : p));
-            }
-            if (payload.eventType === "DELETE") {
-              const removedId = (payload.old as { id: string }).id;
-              return current.filter((p) => p.id !== removedId);
+              return current.some((p) => p.id === row.id)
+                ? current.map((p) => (p.id === row.id ? row : p))
+                : [...current, row];
             }
             return current;
           });

@@ -35,29 +35,31 @@ export function useSharedPosts(sessionId: string | null) {
         setLoading(false);
       });
 
+    // WHY filter なし: DELETE イベントを取りこぼさないため
+    // (useStepProgress と同じ理由。詳細はそちらのコメント参照)。
     const channel = supabase
       .channel(`shared-posts-${sessionId}`)
       .on(
         "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "shared_posts",
-          filter: `session_id=eq.${sessionId}`,
-        },
+        { event: "*", schema: "public", table: "shared_posts" },
         (payload) => {
           if (cancelled) return;
           setPosts((current) => {
+            if (payload.eventType === "DELETE") {
+              const removedId = (payload.old as { id?: string }).id;
+              if (!removedId) return current;
+              return current.filter((p) => p.id !== removedId);
+            }
+            const row = payload.new as SharedPost;
+            if (row.session_id !== sessionId) return current;
             if (payload.eventType === "INSERT") {
-              return [payload.new as SharedPost, ...current];
+              if (current.some((p) => p.id === row.id)) return current;
+              return [row, ...current];
             }
             if (payload.eventType === "UPDATE") {
-              const next = payload.new as SharedPost;
-              return current.map((p) => (p.id === next.id ? next : p));
-            }
-            if (payload.eventType === "DELETE") {
-              const removedId = (payload.old as { id: string }).id;
-              return current.filter((p) => p.id !== removedId);
+              return current.some((p) => p.id === row.id)
+                ? current.map((p) => (p.id === row.id ? row : p))
+                : [row, ...current];
             }
             return current;
           });

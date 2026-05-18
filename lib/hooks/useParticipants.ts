@@ -36,29 +36,31 @@ export function useParticipants(sessionId: string | null) {
         setLoading(false);
       });
 
+    // WHY filter なし: DELETE イベントを取りこぼさないため
+    // (useStepProgress と同じ理由。詳細はそちらのコメント参照)。
     const channel = supabase
       .channel(`participants-${sessionId}`)
       .on(
         "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "participants",
-          filter: `session_id=eq.${sessionId}`,
-        },
+        { event: "*", schema: "public", table: "participants" },
         (payload) => {
           if (cancelled) return;
           setParticipants((current) => {
+            if (payload.eventType === "DELETE") {
+              const removedId = (payload.old as { id?: string }).id;
+              if (!removedId) return current;
+              return current.filter((p) => p.id !== removedId);
+            }
+            const row = payload.new as Participant;
+            if (row.session_id !== sessionId) return current;
             if (payload.eventType === "INSERT") {
-              return [...current, payload.new as Participant];
+              if (current.some((p) => p.id === row.id)) return current;
+              return [...current, row];
             }
             if (payload.eventType === "UPDATE") {
-              const next = payload.new as Participant;
-              return current.map((p) => (p.id === next.id ? next : p));
-            }
-            if (payload.eventType === "DELETE") {
-              const removedId = (payload.old as { id: string }).id;
-              return current.filter((p) => p.id !== removedId);
+              return current.some((p) => p.id === row.id)
+                ? current.map((p) => (p.id === row.id ? row : p))
+                : [...current, row];
             }
             return current;
           });
