@@ -32,6 +32,9 @@ export type StepProgress = {
   participant_id: string | null;
   status: StepStatus;
   trouble_label: string | null;
+  // 困った を押した累計回数。done で上書きしても残す(学習ループ用)。
+  // migration 004 適用前の DB からは返らないので optional 扱い。
+  stuck_count?: number;
   completed_at: string;
 };
 

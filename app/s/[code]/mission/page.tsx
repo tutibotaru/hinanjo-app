@@ -193,17 +193,49 @@ function MissionView({
     setActing(true);
     setActionError(null);
     const supabase = createClient();
-    const { error } = await supabase.from("step_progress").upsert(
-      {
-        session_id: session.id,
-        step_id: current.step.id,
-        participant_id: participant.id,
-        status,
-        trouble_label: troubleLabel,
-        completed_at: new Date().toISOString(),
-      },
-      { onConflict: "session_id,step_id" },
-    );
+    const base = {
+      session_id: session.id,
+      step_id: current.step.id,
+      participant_id: participant.id,
+      completed_at: new Date().toISOString(),
+    };
+
+    let error;
+    if (status === "stuck") {
+      // 困った: stuck_count を +1。done/skip 後でも残るので学習ループに使える。
+      // WHY read-modify-write: upsert は増分できない。同一ステップで複数人が
+      // 同時に困る確率は訓練規模では低く、多少の取りこぼしは許容する。
+      // WHY フォールバック: migration 004 未適用の DB だと stuck_count 列が
+      // 無くエラーになる。その場合は列なしの従来 upsert で劣化動作させる。
+      const { data: cur, error: readErr } = await supabase
+        .from("step_progress")
+        .select("stuck_count")
+        .eq("session_id", session.id)
+        .eq("step_id", current.step.id)
+        .maybeSingle();
+
+      if (readErr) {
+        ({ error } = await supabase.from("step_progress").upsert(
+          { ...base, status, trouble_label: troubleLabel },
+          { onConflict: "session_id,step_id" },
+        ));
+      } else {
+        const next = ((cur?.stuck_count as number | undefined) ?? 0) + 1;
+        ({ error } = await supabase.from("step_progress").upsert(
+          { ...base, status, trouble_label: troubleLabel, stuck_count: next },
+          { onConflict: "session_id,step_id" },
+        ));
+      }
+    } else {
+      // done / skipped: stuck_count と trouble_label を payload に含めない。
+      // PostgREST の on-conflict は渡した列だけ更新するので、過去の
+      // 困った回数・理由は保持される(= 学習ループのデータが消えない)。
+      ({ error } = await supabase.from("step_progress").upsert(
+        { ...base, status },
+        { onConflict: "session_id,step_id" },
+      ));
+    }
+
     setActing(false);
     if (error) {
       setActionError("通信エラーが発生しました。もう一度お試しください。");

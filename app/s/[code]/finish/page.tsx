@@ -47,6 +47,13 @@ function formatElapsed(ms: number): string {
   return m === 0 ? `${h}時間` : `${h}時間${m}分`;
 }
 
+// 困った回数。migration 004 適用後は stuck_count を使う。未適用の DB
+// (列が返らない)では現ステータスが stuck かで代替し旧挙動を維持する
+// (移行前後どちらでも退行しない)。
+function troubleHits(p: { stuck_count?: number; status: string }): number {
+  return p.stuck_count ?? (p.status === "stuck" ? 1 : 0);
+}
+
 export default function FinishPage() {
   const params = useParams<{ code: string }>();
   const router = useRouter();
@@ -116,9 +123,15 @@ function FinishView({ session, code }: { session: Session; code: string }) {
 
   const doneCount = progress.filter((p) => p.status === "done").length;
   const skippedCount = progress.filter((p) => p.status === "skipped").length;
-  const stuckCount = progress.filter((p) => p.status === "stuck").length;
+  // 困った: 最終ステータスではなく「一度でも困った」を数える(学習ループ)。
+  const stuckCount = progress.filter((p) => troubleHits(p) > 0).length;
   const stepsInPhase = allSteps.filter((s) => s.phase <= session.phase);
   const totalSteps = stepsInPhase.length;
+  const stepIdsInPhase = new Set(stepsInPhase.map((s) => s.id));
+  // 着手 = 何らかの進捗行があるステップ数(done/skip/stuck の重複加算を避ける)
+  const attemptedCount = progress.filter((p) =>
+    stepIdsInPhase.has(p.step_id),
+  ).length;
 
   // 経過時間: 最初の参加者の joined_at から現在まで(参加者ゼロなら 0)
   const firstJoinedAt = participants[0]?.joined_at;
@@ -129,10 +142,12 @@ function FinishView({ session, code }: { session: Session; code: string }) {
   const stuckItems = useMemo(
     () =>
       progress
-        .filter((p) => p.status === "stuck")
+        .filter((p) => troubleHits(p) > 0)
         .map((p) => ({
           step: stepById.get(p.step_id),
           troubleLabel: p.trouble_label,
+          count: troubleHits(p),
+          resolved: p.status === "done" || p.status === "skipped",
           nickname: p.participant_id
             ? (participantById.get(p.participant_id) ?? null)
             : null,
@@ -187,7 +202,7 @@ function FinishView({ session, code }: { session: Session; code: string }) {
               }).length;
               const roleStuck = roleSteps.filter((s) => {
                 const p = progress.find((pp) => pp.step_id === s.id);
-                return p?.status === "stuck";
+                return p ? troubleHits(p) > 0 : false;
               }).length;
               const rolePeople = participants.filter(
                 (p) => p.role === role.id,
@@ -231,19 +246,25 @@ function FinishView({ session, code }: { session: Session; code: string }) {
                   key={i}
                   className="rounded-lg border border-amber-200 bg-amber-50 p-3"
                 >
-                  <p className="text-sm font-semibold text-amber-900">
-                    {item.step?.title ?? item.troubleLabel ?? "—"}
-                  </p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-semibold text-amber-900">
+                      {item.step?.title ?? item.troubleLabel ?? "—"}
+                    </p>
+                    <span className="flex-shrink-0 rounded-full bg-amber-200 px-2 py-0.5 text-xs font-bold text-amber-800">
+                      困った {item.count}回
+                    </span>
+                  </div>
                   {item.troubleLabel && (
                     <p className="mt-1 text-xs text-amber-700">
                       理由: {item.troubleLabel}
                     </p>
                   )}
-                  {item.nickname && (
-                    <p className="mt-0.5 text-xs text-amber-600">
-                      報告: {item.nickname} さん
-                    </p>
-                  )}
+                  <p className="mt-0.5 text-xs text-amber-600">
+                    {item.resolved
+                      ? "→ 最終的に解消"
+                      : "→ 未解消(要フォロー)"}
+                    {item.nickname ? ` / 報告: ${item.nickname} さん` : ""}
+                  </p>
                 </li>
               ))}
             </ul>
@@ -254,16 +275,14 @@ function FinishView({ session, code }: { session: Session; code: string }) {
           <h2 className="mb-2 text-sm font-semibold text-slate-700">
             進捗サマリー
           </h2>
-          <p className="text-xs text-slate-600">
-            フェーズ {session.phase} までの全 {totalSteps} ステップのうち、
-            {doneCount} 件完了 / {skippedCount} 件スキップ / {stuckCount} 件困った。
-            着手率{" "}
-            {totalSteps
-              ? Math.round(
-                  ((doneCount + skippedCount + stuckCount) / totalSteps) * 100,
-                )
-              : 0}
-            %。
+          <p className="text-xs leading-relaxed text-slate-600">
+            フェーズ {session.phase} までの全 {totalSteps} ステップ中、
+            {attemptedCount} 件に着手(着手率{" "}
+            {totalSteps ? Math.round((attemptedCount / totalSteps) * 100) : 0}
+            %)。内訳:完了 {doneCount} / スキップ {skippedCount}。
+            {stuckCount > 0
+              ? `困った発生 ${stuckCount} 箇所(完了済みも含む。改善のヒント参照)。`
+              : "困った報告はありませんでした。"}
           </p>
         </section>
 
