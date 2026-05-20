@@ -26,6 +26,7 @@ type Participant = {
 type Role = {
   id: string;
   name: string;
+  short_name?: string;
   description: string;
   color: string;
   mission?: string;
@@ -185,6 +186,26 @@ function MissionView({
     [participants, role.id],
   );
 
+  // 並行で動いている他の app-managed 班(自分以外)の人数。
+  // 「全体の中での自分の位置」を1行で見せるための材料。
+  const otherRoleCounts = useMemo(() => {
+    const roles = stepsData.roles as Role[];
+    return roles
+      .filter((r) => r.id !== role.id)
+      .map((r) => ({
+        name: r.short_name ?? r.name,
+        count: participants.filter((p) => p.role === r.id).length,
+      }));
+  }, [participants, role.id]);
+
+  // 現在ステップが「役割内で何番目か」(1始まり)。
+  // 完了したものも含めた全体の中での位置を示すための数。
+  const currentPosition = useMemo(() => {
+    if (!current) return 0;
+    const idx = myRoleSteps.findIndex((s) => s.id === current.step.id);
+    return idx >= 0 ? idx + 1 : 0;
+  }, [current, myRoleSteps]);
+
   async function persist(
     status: StepStatus,
     troubleLabel: string | null,
@@ -273,6 +294,13 @@ function MissionView({
               <p className="text-sm text-slate-500">
                 仲間 {sameRoleCount}人 / {session.name} ({code})
               </p>
+              <p className="mt-0.5 text-xs leading-snug text-slate-400">
+                並行で動く班:{" "}
+                {otherRoleCounts
+                  .map((r) => `${r.name} ${r.count}人`)
+                  .join(" / ")}
+                {" / "}他は現場担当
+              </p>
             </div>
             <div className="flex flex-shrink-0 flex-col gap-1">
               <Link
@@ -350,7 +378,8 @@ function MissionView({
               {current.step.title}
             </h1>
             <p className="mt-1 text-xs text-slate-500">
-              目安 {current.step.duration_minutes} 分
+              ステップ {currentPosition} / 全 {totalForRole} ・ 目安{" "}
+              {current.step.duration_minutes} 分
             </p>
 
             <ol className="mt-6 space-y-3">

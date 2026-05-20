@@ -38,6 +38,17 @@ type Step = {
   troubles: Trouble[];
   depends_on: string[];
 };
+// 「全体の班構成」マップ用。in_app=false の班はアプリ管理外で
+// 現場で別途運営される(救護衛生・食料物資・要配慮者支援等)。
+type RoleFunction = {
+  id: string;
+  name: string;
+  short_name: string;
+  responsibility: string;
+  examples: string[];
+  in_app: boolean;
+  color: string;
+};
 type StoredParticipant = { id: string; nickname: string };
 
 export default function BoardPage() {
@@ -101,6 +112,7 @@ function BoardView({ session, code }: { session: Session; code: string }) {
 
   const roles = stepsData.roles as Role[];
   const allSteps = stepsData.steps as Step[];
+  const functions = (stepsData.functions ?? []) as RoleFunction[];
 
   const participantById = useMemo(() => {
     const m = new Map<string, string>();
@@ -151,6 +163,60 @@ function BoardView({ session, code }: { session: Session; code: string }) {
             </div>
           </div>
         </header>
+
+        {functions.length > 0 && (
+          <section className="border-b border-slate-200 bg-white px-5 py-4">
+            <h2 className="text-sm font-bold text-slate-900">
+              全体の班構成
+            </h2>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              避難所運営は本来この7班が並行して動きます。
+              <span className="font-semibold text-emerald-700">●</span>{" "}
+              はこのアプリで管理。
+              <span className="font-semibold text-slate-500">○</span>{" "}
+              は現場で別途運営してください(本アプリの管理対象外)。
+            </p>
+            <ul className="mt-3 space-y-1.5">
+              {functions.map((fn) => {
+                const inAppCount = fn.in_app
+                  ? participants.filter((p) => p.role === fn.id).length
+                  : null;
+                return (
+                  <li
+                    key={fn.id}
+                    className="flex items-start gap-2 rounded-md border border-slate-100 bg-slate-50 px-2 py-1.5"
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-0.5 inline-block h-3 w-3 flex-shrink-0 rounded-full"
+                      style={{ backgroundColor: fn.color }}
+                    />
+                    <div className="flex-1 text-xs leading-snug">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="font-bold text-slate-900">
+                          {fn.in_app ? "●" : "○"} {fn.name}
+                        </span>
+                        {fn.in_app && (
+                          <span className="text-slate-500">
+                            ({inAppCount}人)
+                          </span>
+                        )}
+                        {!fn.in_app && (
+                          <span className="text-[10px] text-slate-400">
+                            現場担当
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-0.5 text-slate-600">
+                        {fn.responsibility}
+                      </p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
 
         <div className="space-y-4 px-5 py-5">
           {roles.map((role) => {
