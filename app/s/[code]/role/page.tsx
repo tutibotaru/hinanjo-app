@@ -7,49 +7,87 @@ import stepsData from "@/data/steps.json";
 
 type StoredParticipant = { id: string; nickname: string };
 type AnswerValue = 0 | 1 | 2;
-type Answers = { q1?: AnswerValue; q2?: AnswerValue; q3?: AnswerValue };
+type Answers = {
+  q1?: AnswerValue;
+  q2?: AnswerValue;
+  q3?: AnswerValue;
+  q4?: AnswerValue;
+  q5?: AnswerValue;
+};
+type QuestionKey = "q1" | "q2" | "q3" | "q4" | "q5";
+type Question = {
+  key: QuestionKey;
+  text: string;
+  options: ReadonlyArray<{ label: string; value: AnswerValue }>;
+};
 
-const questions = [
+// 7班に対応するため Q4(子育て・高齢者支援) と Q5(整理・数を扱う) を追加。
+const questions: ReadonlyArray<Question> = [
   {
-    key: "q1" as const,
+    key: "q1",
     text: "体を動かす作業はできますか?",
     options: [
-      { label: "できる", value: 2 as AnswerValue },
-      { label: "少しなら", value: 1 as AnswerValue },
-      { label: "難しい", value: 0 as AnswerValue },
+      { label: "できる", value: 2 },
+      { label: "少しなら", value: 1 },
+      { label: "難しい", value: 0 },
     ],
   },
   {
-    key: "q2" as const,
+    key: "q2",
     text: "医療や福祉の経験はありますか?",
     options: [
-      { label: "ある", value: 2 as AnswerValue },
-      { label: "少しある", value: 1 as AnswerValue },
-      { label: "ない", value: 0 as AnswerValue },
+      { label: "ある", value: 2 },
+      { label: "少しある", value: 1 },
+      { label: "ない", value: 0 },
     ],
   },
   {
-    key: "q3" as const,
+    key: "q3",
     text: "人前で話すのは得意ですか?",
     options: [
-      { label: "得意", value: 2 as AnswerValue },
-      { label: "普通", value: 1 as AnswerValue },
-      { label: "苦手", value: 0 as AnswerValue },
+      { label: "得意", value: 2 },
+      { label: "普通", value: 1 },
+      { label: "苦手", value: 0 },
     ],
   },
-] as const;
+  {
+    key: "q4",
+    text: "子育てや高齢者の支援の経験はありますか?",
+    options: [
+      { label: "ある", value: 2 },
+      { label: "少しある", value: 1 },
+      { label: "ない", value: 0 },
+    ],
+  },
+  {
+    key: "q5",
+    text: "物の整理や数を扱う作業は得意ですか?",
+    options: [
+      { label: "得意", value: 2 },
+      { label: "普通", value: 1 },
+      { label: "苦手", value: 0 },
+    ],
+  },
+];
 
-// 訓練結果を見てチューニングする想定の単純重み付け。
-// 質問をスキップした場合は answers が空なので 0 として扱う。
-function computeScores(answers: Answers) {
+// 訓練結果でチューニング想定の単純重み付け。Q が空(スキップ)時は 0 として扱う。
+// 7班(総務/施設/情報/救護衛生/食料物資/要配慮者支援/本部)それぞれに
+// 「向いている人の特徴」を反映。
+function computeScores(answers: Answers): Record<string, number> {
   const q1 = answers.q1 ?? 0;
   const q2 = answers.q2 ?? 0;
   const q3 = answers.q3 ?? 0;
+  const q4 = answers.q4 ?? 0;
+  const q5 = answers.q5 ?? 0;
   return {
     "general-affairs": q1 + q3 * 2,
-    facility: q1 * 2 + q2,
-    information: q2 + q3 * 2,
-  } as Record<string, number>;
+    facility: q1 * 2 + q5,
+    information: q3 * 2 + q2,
+    "medical-hygiene": q2 * 3 + q1,
+    supplies: q1 * 2 + q5 * 2,
+    "vulnerable-support": q4 * 2 + q2 * 2,
+    leader: q3 * 2 + q1 + q2,
+  };
 }
 
 type Role = {
@@ -65,7 +103,9 @@ export default function RolePage() {
   const router = useRouter();
   const [stored, setStored] = useState<StoredParticipant | null>(null);
   const [answers, setAnswers] = useState<Answers>({});
-  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
+  // step: 0..questions.length-1 が質問、questions.length が選択画面。
+  // 7班・5問への拡張で literal-union が煩雑になるため number で管理。
+  const [step, setStep] = useState<number>(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [alreadyHasRole, setAlreadyHasRole] = useState(false);
@@ -108,17 +148,17 @@ export default function RolePage() {
 
   const code = params.code.toUpperCase();
   const totalSteps = questions.length + 1;
+  const chooseStep = questions.length;
 
   function handleAnswer(value: AnswerValue) {
     if (step >= questions.length) return;
-    const key = questions[step as 0 | 1 | 2].key;
+    const key = questions[step].key;
     setAnswers((a) => ({ ...a, [key]: value }));
-    setStep((s) => Math.min(s + 1, 3) as 0 | 1 | 2 | 3);
+    setStep((s) => Math.min(s + 1, chooseStep));
   }
 
   function handleBack() {
-    if (step === 0) return;
-    setStep((s) => Math.max(s - 1, 0) as 0 | 1 | 2 | 3);
+    setStep((s) => Math.max(s - 1, 0));
   }
 
   async function selectRole(roleId: string) {
@@ -139,7 +179,7 @@ export default function RolePage() {
   }
 
   const Progress = () => (
-    <div className="mb-8 flex items-center justify-center gap-2">
+    <div className="mb-8 flex items-center justify-center gap-1.5">
       {Array.from({ length: totalSteps }).map((_, i) => (
         <span
           key={i}
@@ -154,7 +194,7 @@ export default function RolePage() {
 
   // 質問ステップ
   if (step < questions.length) {
-    const q = questions[step as 0 | 1 | 2];
+    const q = questions[step];
     return (
       <main className="min-h-screen bg-slate-50 px-5 py-8 sm:px-8">
         <div className="mx-auto max-w-md">
@@ -162,14 +202,14 @@ export default function RolePage() {
           <p className="mb-2 text-center text-xs font-semibold tracking-widest text-emerald-700">
             質問 {step + 1} / {questions.length}
           </p>
-          <h1 className="mb-8 text-center text-2xl font-bold text-slate-900">
+          <h1 className="mb-8 text-center text-2xl font-bold leading-snug text-slate-900">
             {q.text}
           </h1>
           {step === 0 && alreadyHasRole && (
             <div className="mb-6 text-center">
               <button
                 type="button"
-                onClick={() => setStep(3)}
+                onClick={() => setStep(chooseStep)}
                 className="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
               >
                 質問をスキップして役割だけ選ぶ →
@@ -209,7 +249,9 @@ export default function RolePage() {
   const skipped =
     answers.q1 === undefined &&
     answers.q2 === undefined &&
-    answers.q3 === undefined;
+    answers.q3 === undefined &&
+    answers.q4 === undefined &&
+    answers.q5 === undefined;
   const scores = computeScores(answers);
   const roles = stepsData.roles as Role[];
   const sortedRoles = [...roles].sort(
@@ -230,8 +272,10 @@ export default function RolePage() {
               ? `${stored.nickname} さんの役割`
               : `${stored.nickname} さんへのおすすめ`}
           </h1>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">
             気が変わったら後から変更できます。
+            <br />
+            この避難所運営は本来7班で動きます。あなたが担当する1班を選んでください。
           </p>
         </header>
 
@@ -287,7 +331,7 @@ export default function RolePage() {
         <div className="mt-8 text-center">
           <button
             type="button"
-            onClick={() => setStep(questions.length - 1 as 2)}
+            onClick={() => setStep(questions.length - 1)}
             className="text-sm text-slate-500 underline"
           >
             ← 質問をやり直す
