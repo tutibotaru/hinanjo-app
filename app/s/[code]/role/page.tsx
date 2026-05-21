@@ -73,6 +73,15 @@ const questions: ReadonlyArray<Question> = [
 // 訓練結果でチューニング想定の単純重み付け。Q が空(スキップ)時は 0 として扱う。
 // 7班(総務/施設/情報/救護衛生/食料物資/要配慮者支援/本部)それぞれに
 // 「向いている人の特徴」を反映。
+// 設問の意味:
+//   q1: 体力(運搬・点検・立ち仕事)
+//   q2: 医療経験(検温・救護・薬の知識)
+//   q3: 対人スキル(放送・案内・調整)
+//   q4: 福祉経験(高齢者・障害者・乳幼児ケア)
+//   q5: 整理整頓(名簿・在庫・掲示整理)
+// WHY: 内閣府ガイドライン R6 と各自治体マニュアルを参照し、各班に
+//   主要 2 問(重み2-3)+ 補助 1-2 問(重み1)を反映。
+//   訓練データに応じて微調整可能。
 function computeScores(answers: Answers): Record<string, number> {
   const q1 = answers.q1 ?? 0;
   const q2 = answers.q2 ?? 0;
@@ -80,13 +89,20 @@ function computeScores(answers: Answers): Record<string, number> {
   const q4 = answers.q4 ?? 0;
   const q5 = answers.q5 ?? 0;
   return {
-    "general-affairs": q1 + q3 * 2,
-    facility: q1 * 2 + q5,
-    information: q3 * 2 + q2,
-    "medical-hygiene": q2 * 3 + q1,
-    supplies: q1 * 2 + q5 * 2,
-    "vulnerable-support": q4 * 2 + q2 * 2,
-    leader: q3 * 2 + q1 + q2,
+    // 受付・名簿管理:対人(声かけ)が主、整理(名簿)と軽い体力(立ち仕事)を補助
+    "general-affairs": q3 * 2 + q5 + q1,
+    // 安全確認・スペース設営:体力(資機材)が主、整理(レイアウト)と対人(現場調整)を補助
+    facility: q1 * 2 + q5 + q3,
+    // 通信・広報・掲示:対人(話す)が主、医療(健康情報)と整理(掲示整理)を補助
+    information: q3 * 2 + q2 + q5,
+    // 検温・救護・衛生:医療経験が必須に近い、福祉(要配慮者ケア)と体力を補助
+    "medical-hygiene": q2 * 3 + q1 + q4,
+    // 備蓄・在庫・配布:整理(在庫)と体力(運搬)が両輪、対人(配布時の声かけ)を補助
+    supplies: q1 * 2 + q5 * 2 + q3,
+    // 要配慮者・多文化:福祉経験と医療経験が両輪、対人(やさしい話)を補助
+    "vulnerable-support": q4 * 2 + q2 * 2 + q3,
+    // 司令塔・班間調整:対人が主、体力と医療判断と整理判断をバランスで補助
+    leader: q3 * 2 + q1 + q2 + q5,
   };
 }
 

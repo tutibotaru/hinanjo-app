@@ -34,3 +34,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 参考資料(data/steps.json と区別)— ローカル参照用、リポには含めない
+# ユーザーが steps.json 強化のために投入したガイドラインPDF/docx一式
+data/*.pdf
+data/*.docx
+
+# 抽出作業用一時ファイル(docx/pdf → text への変換キャッシュ)
+/.tmp_extract/
