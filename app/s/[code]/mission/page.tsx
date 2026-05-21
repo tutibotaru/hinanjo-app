@@ -186,16 +186,20 @@ function MissionView({
     [participants, role.id],
   );
 
-  // 並行で動いている他の app-managed 班(自分以外)の人数。
-  // 「全体の中での自分の位置」を1行で見せるための材料。
-  const otherRoleCounts = useMemo(() => {
+  // 並行で動いている他の app-managed 班(自分以外)の合計人数と参加中の班数。
+  // 7班分を1行で並べると 360px 幅で3行に折返るため、合計だけを短く出し
+  // 「全班の中での自分の位置」を1行で伝える。詳細はボードに譲る。
+  const otherSummary = useMemo(() => {
     const roles = stepsData.roles as Role[];
-    return roles
-      .filter((r) => r.id !== role.id)
-      .map((r) => ({
-        name: r.short_name ?? r.name,
-        count: participants.filter((p) => p.role === r.id).length,
-      }));
+    const others = roles.filter((r) => r.id !== role.id);
+    let people = 0;
+    let activeBands = 0;
+    others.forEach((r) => {
+      const c = participants.filter((p) => p.role === r.id).length;
+      people += c;
+      if (c > 0) activeBands += 1;
+    });
+    return { people, activeBands, totalOthers: others.length };
   }, [participants, role.id]);
 
   // 現在ステップが「役割内で何番目か」(1始まり)。
@@ -295,11 +299,8 @@ function MissionView({
                 仲間 {sameRoleCount}人 / {session.name} ({code})
               </p>
               <p className="mt-0.5 text-xs leading-snug text-slate-400">
-                並行で動く班:{" "}
-                {otherRoleCounts
-                  .map((r) => `${r.name} ${r.count}人`)
-                  .join(" / ")}
-                {" / "}他は現場担当
+                他班 {otherSummary.activeBands}/{otherSummary.totalOthers}班{" "}
+                計{otherSummary.people}人(詳細はボード)
               </p>
             </div>
             <div className="flex flex-shrink-0 flex-col gap-1">
@@ -339,6 +340,31 @@ function MissionView({
             />
           </div>
         </div>
+
+        {role.id === "leader" && (
+          <section className="border-y border-slate-700 bg-slate-800 px-5 py-3 text-white">
+            <div className="flex items-center gap-3">
+              <span aria-hidden className="text-lg">
+                🛡
+              </span>
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-slate-300">
+                  あなたは本部役です
+                </p>
+                <p className="mt-0.5 text-sm font-bold leading-snug">
+                  フェーズ進行・モード変更は運営パネルから
+                </p>
+              </div>
+              <Link
+                href={`/s/${code}/manage`}
+                style={{ minHeight: 44 }}
+                className="flex flex-shrink-0 items-center rounded-md bg-emerald-500 px-3 text-sm font-bold text-white shadow-sm hover:bg-emerald-400 active:bg-emerald-600"
+              >
+                運営パネル →
+              </Link>
+            </div>
+          </section>
+        )}
 
         {totalForRole === 0 ? (
           <section className="px-5 py-16 text-center">

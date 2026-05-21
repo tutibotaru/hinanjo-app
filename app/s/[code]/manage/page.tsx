@@ -18,7 +18,9 @@ const PHASE_LABELS: Record<number, string> = {
   0: "初動(発災〜15分)",
   1: "開設初期(15分〜1時間)",
   2: "応急運営(1〜2時間)",
+  3: "安定運営(1日〜)",
 };
+const PHASE_MAX = 3;
 
 export default function ManagePage() {
   const params = useParams<{ code: string }>();
@@ -32,7 +34,10 @@ export default function ManagePage() {
   // WHY: 運営パネルはフェーズ変更・進捗リセット等の破壊操作を持つ。
   // 一般参加者の誤タップ防止のため、コード再入力で意思確認する
   // (RLS による本来のアクセス制御は別途サーバ側で対応する想定)。
+  // ただし本部(leader)ロールを選んだ参加者は運営する立場なので、
+  // 自動アンロックして mission からの導線をスムーズにする。
   const [unlocked, setUnlocked] = useState(false);
+  const [autoUnlockReason, setAutoUnlockReason] = useState<string | null>(null);
   const [gateInput, setGateInput] = useState("");
 
   const code = params.code.toUpperCase();
@@ -62,6 +67,39 @@ export default function ManagePage() {
     };
   }, [code, router]);
 
+  // 本部ロール参加者の自動アンロック判定。
+  // localStorage に participant id があれば Supabase で role を確認。
+  // leader ならゲートを開ける。それ以外は従来通り再入力ゲートに留める。
+  useEffect(() => {
+    if (unlocked) return;
+    const raw = localStorage.getItem(`hinanjo:participant:${code}`);
+    if (!raw) return;
+    let parsed: { id?: string } = {};
+    try {
+      parsed = JSON.parse(raw) as { id?: string };
+    } catch {
+      return;
+    }
+    if (!parsed.id) return;
+    const supabase = createClient();
+    let cancelled = false;
+    supabase
+      .from("participants")
+      .select("role")
+      .eq("id", parsed.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (cancelled) return;
+        if (data?.role === "leader") {
+          setUnlocked(true);
+          setAutoUnlockReason("本部役として開きました");
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [code, unlocked]);
+
   async function refresh() {
     const supabase = createClient();
     const { data } = await supabase
@@ -74,7 +112,7 @@ export default function ManagePage() {
 
   async function changePhase(delta: number) {
     if (!session) return;
-    const next = Math.max(0, Math.min(2, session.phase + delta));
+    const next = Math.max(0, Math.min(PHASE_MAX, session.phase + delta));
     if (next === session.phase) return;
     setBusy(true);
     setMsg(null);
@@ -238,13 +276,28 @@ export default function ManagePage() {
                 コード {code} / フェーズ {session.phase} /{" "}
                 {session.mode === "training" ? "訓練" : "本番"}
               </p>
+              {autoUnlockReason && (
+                <p className="mt-1 inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+                  {autoUnlockReason}
+                </p>
+              )}
             </div>
-            <Link
-              href={`/s/${code}/board`}
-              className="flex-shrink-0 text-xs text-emerald-700 underline"
-            >
-              ボードへ
-            </Link>
+            <div className="flex flex-shrink-0 flex-col items-end gap-1">
+              <Link
+                href={`/s/${code}/board`}
+                className="text-xs text-emerald-700 underline"
+              >
+                ボードへ
+              </Link>
+              {autoUnlockReason && (
+                <Link
+                  href={`/s/${code}/mission`}
+                  className="text-xs text-slate-500 underline"
+                >
+                  マイへ戻る
+                </Link>
+              )}
+            </div>
           </div>
         </header>
 
@@ -273,7 +326,7 @@ export default function ManagePage() {
               <button
                 type="button"
                 onClick={() => changePhase(1)}
-                disabled={busy || session.phase >= 2}
+                disabled={busy || session.phase >= PHASE_MAX}
                 style={{ minHeight: 48 }}
                 className="flex-1 rounded-lg bg-emerald-600 text-sm font-bold text-white disabled:opacity-40"
               >
