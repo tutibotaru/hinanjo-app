@@ -1385,7 +1385,7 @@
       "id": "mh-006",
       "role": "medical-hygiene",
       "phase": 2,
-      "order": 9,
+      "order": 10,
       "title": "嘔吐物・汚物の処理を準備",
       "duration_minutes": 4,
       "instructions": [
@@ -1417,7 +1417,7 @@
       "id": "mh-007",
       "role": "medical-hygiene",
       "phase": 2,
-      "order": 10,
+      "order": 11,
       "title": "トイレ衛生の点検表を作る",
       "duration_minutes": 3,
       "instructions": [
@@ -1449,7 +1449,7 @@
       "id": "mh-008",
       "role": "medical-hygiene",
       "phase": 2,
-      "order": 11,
+      "order": 12,
       "title": "巡回で体調変化を見る",
       "duration_minutes": 5,
       "instructions": [
@@ -1607,7 +1607,7 @@
       "id": "su-005",
       "role": "supplies",
       "phase": 2,
-      "order": 8,
+      "order": 9,
       "title": "配布ルールを決めて掲示",
       "duration_minutes": 4,
       "instructions": [
@@ -1639,7 +1639,7 @@
       "id": "su-006",
       "role": "supplies",
       "phase": 2,
-      "order": 9,
+      "order": 10,
       "title": "配布列の動線を作る",
       "duration_minutes": 4,
       "instructions": [
@@ -1671,7 +1671,7 @@
       "id": "su-007",
       "role": "supplies",
       "phase": 2,
-      "order": 10,
+      "order": 11,
       "title": "配った数を記録する",
       "duration_minutes": 3,
       "instructions": [
@@ -1829,7 +1829,7 @@
       "id": "vu-005",
       "role": "vulnerable-support",
       "phase": 2,
-      "order": 8,
+      "order": 9,
       "title": "見守り巡回シフトを組む",
       "duration_minutes": 4,
       "instructions": [
@@ -1861,7 +1861,7 @@
       "id": "vu-006",
       "role": "vulnerable-support",
       "phase": 2,
-      "order": 9,
+      "order": 10,
       "title": "個別ケア記録表を作る",
       "duration_minutes": 4,
       "instructions": [
@@ -2019,7 +2019,7 @@
       "id": "ld-005",
       "role": "leader",
       "phase": 2,
-      "order": 8,
+      "order": 11,
       "title": "フェーズ移行を判断する",
       "duration_minutes": 4,
       "instructions": [
@@ -2051,7 +2051,7 @@
       "id": "ld-006",
       "role": "leader",
       "phase": 2,
-      "order": 9,
+      "order": 12,
       "title": "対外発表の文面を承認",
       "duration_minutes": 4,
       "instructions": [
@@ -2461,7 +2461,7 @@
       "id": "mh-009",
       "role": "medical-hygiene",
       "phase": 3,
-      "order": 12,
+      "order": 14,
       "title": "福祉避難所への移送をリスト化",
       "duration_minutes": 5,
       "instructions": [
@@ -2491,7 +2491,7 @@
       "id": "mh-010",
       "role": "medical-hygiene",
       "phase": 3,
-      "order": 13,
+      "order": 15,
       "title": "感染症発生時のゾーニング",
       "duration_minutes": 5,
       "instructions": [
@@ -2523,7 +2523,7 @@
       "id": "mh-011",
       "role": "medical-hygiene",
       "phase": 3,
-      "order": 14,
+      "order": 16,
       "title": "持病薬の補給を支援する",
       "duration_minutes": 4,
       "instructions": [
@@ -2553,7 +2553,7 @@
       "id": "su-008",
       "role": "supplies",
       "phase": 3,
-      "order": 11,
+      "order": 13,
       "title": "不足物資を1日2回発注",
       "duration_minutes": 4,
       "instructions": [
@@ -2583,7 +2583,7 @@
       "id": "su-009",
       "role": "supplies",
       "phase": 3,
-      "order": 12,
+      "order": 14,
       "title": "食中毒予防の温度管理",
       "duration_minutes": 5,
       "instructions": [
@@ -2615,7 +2615,7 @@
       "id": "su-010",
       "role": "supplies",
       "phase": 3,
-      "order": 13,
+      "order": 15,
       "title": "アレルギー・宗教食を仕分け",
       "duration_minutes": 5,
       "instructions": [
@@ -2647,7 +2647,7 @@
       "id": "vu-007",
       "role": "vulnerable-support",
       "phase": 3,
-      "order": 10,
+      "order": 13,
       "title": "心のケア巡回を始める",
       "duration_minutes": 5,
       "instructions": [
@@ -2677,7 +2677,7 @@
       "id": "vu-008",
       "role": "vulnerable-support",
       "phase": 3,
-      "order": 11,
+      "order": 14,
       "title": "福祉避難所マッチング",
       "duration_minutes": 5,
       "instructions": [
@@ -2709,7 +2709,7 @@
       "id": "vu-009",
       "role": "vulnerable-support",
       "phase": 3,
-      "order": 12,
+      "order": 15,
       "title": "子どもの居場所を作る",
       "duration_minutes": 5,
       "instructions": [
@@ -2739,7 +2739,7 @@
       "id": "ld-007",
       "role": "leader",
       "phase": 3,
-      "order": 10,
+      "order": 16,
       "title": "24時間体制の計画を承認",
       "duration_minutes": 5,
       "instructions": [
@@ -2769,7 +2769,7 @@
       "id": "ld-008",
       "role": "leader",
       "phase": 3,
-      "order": 11,
+      "order": 17,
       "title": "ボランティア受入を判断",
       "duration_minutes": 5,
       "instructions": [
@@ -2801,7 +2801,7 @@
       "id": "ld-009",
       "role": "leader",
       "phase": 3,
-      "order": 12,
+      "order": 18,
       "title": "撤収判断の準備を始める",
       "duration_minutes": 5,
       "instructions": [
@@ -2831,7 +2831,7 @@
       "id": "ld-010",
       "role": "leader",
       "phase": 3,
-      "order": 13,
+      "order": 19,
       "title": "自治体連携会議を定例化",
       "duration_minutes": 5,
       "instructions": [
@@ -3337,6 +3337,518 @@
       ],
       "depends_on": [
         "ld-002"
+      ]
+    },
+    {
+      "id": "ld-018",
+      "role": "leader",
+      "phase": 1,
+      "order": 8,
+      "title": "班長と顔合わせ・連絡網作り",
+      "duration_minutes": 4,
+      "instructions": [
+        "本部に班長を集める",
+        "互いの名前と連絡先を交換",
+        "1枚の名簿にまとめる"
+      ],
+      "completion_condition": "班長の連絡網が1枚にまとまっている",
+      "point": "phase 0 で各班が動き始めた後、本部が最初にやるべきは『誰が班長か』の確定。電話番号・LINEのID・無線のチャンネル等、連絡手段を全員揃える。本部室の壁に名簿を貼って常に見える化。緊急時に班長同士で直接連絡できると、本部経由の伝言ゲームが減って速度が上がる。班長会議の出席義務もここで確認。",
+      "troubles": [
+        {
+          "label": "班長が来られない",
+          "action": "副班長で代理"
+        },
+        {
+          "label": "連絡先を持たず",
+          "action": "口頭でも伝言可"
+        },
+        {
+          "label": "班長未決定",
+          "action": "10分で互選を"
+        }
+      ],
+      "depends_on": [
+        "ld-015"
+      ]
+    },
+    {
+      "id": "ld-016",
+      "role": "leader",
+      "phase": 1,
+      "order": 9,
+      "title": "リーダー会議の時刻を決める",
+      "duration_minutes": 3,
+      "instructions": [
+        "会議は15分ごとと決める",
+        "場所を本部室に固定",
+        "全班長に時刻を伝える"
+      ],
+      "completion_condition": "次回会議の時刻が全員に共有された",
+      "point": "リーダー会議は『短く・頻繁に・場所固定』が正解。phase 1 では15分ごとに各班1分ずつ報告が目安。場所と時刻を固定すれば『集まれない』が減る。座って長く話す必要はなく、立ち話でも OK。決まった時刻に来られない班長は副に代理を頼んでもらう。",
+      "troubles": [
+        {
+          "label": "全員揃わない",
+          "action": "代理出席を許す"
+        },
+        {
+          "label": "時間が読めない",
+          "action": "緩い30分ごとに"
+        },
+        {
+          "label": "場所が騒がしい",
+          "action": "別室を確保"
+        }
+      ],
+      "depends_on": [
+        "ld-018"
+      ]
+    },
+    {
+      "id": "ld-017",
+      "role": "leader",
+      "phase": 1,
+      "order": 10,
+      "title": "本部に第1回詳細報告",
+      "duration_minutes": 5,
+      "instructions": [
+        "現在の人数・男女比を確認",
+        "要配慮者数・体調不良者を",
+        "情報班経由で本部に送る"
+      ],
+      "completion_condition": "詳細報告が本部に届いた",
+      "point": "第一報(in-016)では『開設した』だけ。phase 1 では『誰が何人いるか』の詳細を送る。人数・男女比・要配慮者の有無・体調不良者の有無は本部側の物資配分の根拠になる。30分以内が目標。完璧でなくてよい(概数で OK)。情報班経由で送り、自分は直接本部に電話しない(窓口一本化ルール)。",
+      "troubles": [
+        {
+          "label": "数が把握できず",
+          "action": "概数で送る"
+        },
+        {
+          "label": "通信不安定",
+          "action": "メール+電話"
+        },
+        {
+          "label": "本部多忙",
+          "action": "メッセージで先送り"
+        }
+      ],
+      "depends_on": [
+        "ld-004"
+      ]
+    },
+    {
+      "id": "ld-019",
+      "role": "leader",
+      "phase": 2,
+      "order": 13,
+      "title": "各班の困りごとを集約",
+      "duration_minutes": 5,
+      "instructions": [
+        "班長会議で1人1個ずつ聞く",
+        "困りごとを紙にリスト化",
+        "解決優先度を3段階に分ける"
+      ],
+      "completion_condition": "困りごとリストと優先度が決まった",
+      "point": "phase 2 では各班に必ず困りごとが溜まる。聞き出さないと現場が回らなくなる。1人1個に絞れば短時間で集約できる。優先度は『今すぐ(命に関わる)・1時間以内・本日中』の3段階で十分。リストは本部室に貼り、対応済みは線で消す(進捗の見える化)。",
+      "troubles": [
+        {
+          "label": "話が長くなる",
+          "action": "1人1分タイマー"
+        },
+        {
+          "label": "多すぎて捌けない",
+          "action": "今すぐだけ先に"
+        },
+        {
+          "label": "班長が遠慮",
+          "action": "匿名カードに書く"
+        }
+      ],
+      "depends_on": [
+        "ld-016"
+      ]
+    },
+    {
+      "id": "ld-020",
+      "role": "leader",
+      "phase": 2,
+      "order": 14,
+      "title": "物資要請の優先順位を決める",
+      "duration_minutes": 4,
+      "instructions": [
+        "困りごとから不足物資を抽出",
+        "命に関わる順に並べる",
+        "情報班経由で本部に要請"
+      ],
+      "completion_condition": "優先順付きの物資要請が本部に届いた",
+      "point": "物資要請は『多すぎず・絞って・優先順を付ける』が原則。本部側も全国の避難所からの要請を捌くので、優先順がないと後回しになる。優先順は『水/トイレ/毛布/食料/医薬品/その他』の順が基本(命に直結する順)。要請には『何を・いくつ・いつまでに』を明記する。",
+      "troubles": [
+        {
+          "label": "全部欲しい",
+          "action": "上位5つに絞る"
+        },
+        {
+          "label": "個数が読めない",
+          "action": "1日分でまず要請"
+        },
+        {
+          "label": "本部回答遅い",
+          "action": "他避難所と物資交換も"
+        }
+      ],
+      "depends_on": [
+        "ld-019"
+      ]
+    },
+    {
+      "id": "ld-021",
+      "role": "leader",
+      "phase": 2,
+      "order": 15,
+      "title": "翌日の予定を決めて掲示",
+      "duration_minutes": 4,
+      "instructions": [
+        "明日の主要予定を3つ書く",
+        "情報班に掲示を依頼",
+        "館内放送でも周知する"
+      ],
+      "completion_condition": "明日の予定3つが掲示と放送で共有された",
+      "point": "避難者は『明日どうなるか』が見えないと不安が増す。phase 2 で1日が落ち着いた段階で『明日の主要予定』を3つだけ決めて見える化する。予定は『食事・配布時刻・行事(医療巡回や説明会等)・撤収準備』など。完璧な計画は不要、変更も前提に。",
+      "troubles": [
+        {
+          "label": "予定が決まらず",
+          "action": "未定と明記"
+        },
+        {
+          "label": "予定変更続く",
+          "action": "都度差し替え"
+        },
+        {
+          "label": "放送設備故障",
+          "action": "巡回口頭広報"
+        }
+      ],
+      "depends_on": [
+        "ld-006"
+      ]
+    },
+    {
+      "id": "vu-013",
+      "role": "vulnerable-support",
+      "phase": 2,
+      "order": 11,
+      "title": "福祉避難所の空きを確認",
+      "duration_minutes": 5,
+      "instructions": [
+        "自治体の福祉避難所一覧を入手",
+        "電話で受入可否を確認",
+        "空き状況を紙にまとめる"
+      ],
+      "completion_condition": "福祉避難所の連絡先と空き状況がリスト化された",
+      "point": "phase 2 で救護衛生班と連携して『要配慮者の移送候補』を抽出するが、移送先が満員だと意味がない。先に福祉避難所(高齢者施設・障害者施設・特別支援学校等)の空き状況を確認する。電話一本で『何人空いてる』が分かる。空きが無くても他自治体への広域要請の準備になる。本人意向確認(vu-008・phase 3)とセットで進める。",
+      "troubles": [
+        {
+          "label": "一覧が無い",
+          "action": "本部に問合せ"
+        },
+        {
+          "label": "電話不通",
+          "action": "順次再電話"
+        },
+        {
+          "label": "全部満員",
+          "action": "広域要請を準備"
+        }
+      ],
+      "depends_on": [
+        "vu-006"
+      ]
+    },
+    {
+      "id": "vu-014",
+      "role": "vulnerable-support",
+      "phase": 2,
+      "order": 12,
+      "title": "子ども・高齢者の運動場を作る",
+      "duration_minutes": 5,
+      "instructions": [
+        "屋内の安全な区画を選ぶ",
+        "ストレッチや遊びの場を準備",
+        "見守り担当を1名置く"
+      ],
+      "completion_condition": "運動場の場所と担当が決まった",
+      "point": "避難所にじっとしていると、特に高齢者は『生活不活発病(廃用症候群)』で立てなくなる・子どもはストレスで体調を崩す。短時間の運動・ストレッチ・遊びの場を作るだけで予防になる。NHK ラジオ体操や、椅子に座ってできる運動が標準。子どもは絵本・お絵かき・折り紙。1時間に1回・5分でも効果あり。",
+      "troubles": [
+        {
+          "label": "場所が取れない",
+          "action": "時間制で兼用"
+        },
+        {
+          "label": "見守り不足",
+          "action": "ボランティア要請"
+        },
+        {
+          "label": "参加少ない",
+          "action": "BGMで誘う"
+        }
+      ],
+      "depends_on": [
+        "vu-006"
+      ]
+    },
+    {
+      "id": "mh-017",
+      "role": "medical-hygiene",
+      "phase": 1,
+      "order": 9,
+      "title": "医療チーム派遣を要請",
+      "duration_minutes": 4,
+      "instructions": [
+        "持病・救護対応の見通しをまとめる",
+        "本部経由で医療派遣を要請",
+        "受入準備(救護室・案内)を整える"
+      ],
+      "completion_condition": "医療チーム派遣の要請が本部に届いた",
+      "point": "phase 1 で医療ニーズが見えてきたら、すぐに DMAT(災害派遣医療チーム)・JMAT(日本医師会)・保健師・薬剤師の派遣要請を入れる。早ければ早いほど来てもらえる。要請には『何人困っているか・どんな症状か』の見通しを添える。来てもらえる時間と人数が分かったら、救護室の場所と動線を再点検する。",
+      "troubles": [
+        {
+          "label": "判断に迷う",
+          "action": "迷ったら要請"
+        },
+        {
+          "label": "本部回答遅い",
+          "action": "県・市の医療担当へ直接"
+        },
+        {
+          "label": "派遣が遅れる",
+          "action": "巡回診療を要請"
+        }
+      ],
+      "depends_on": [
+        "mh-003"
+      ]
+    },
+    {
+      "id": "su-014",
+      "role": "supplies",
+      "phase": 1,
+      "order": 8,
+      "title": "アレルギー・特別食を確認",
+      "duration_minutes": 4,
+      "instructions": [
+        "受付名簿でアレルギー欄を確認",
+        "対応食の必要数を集計",
+        "本部に早めに要請する"
+      ],
+      "completion_condition": "アレルギー対応食の必要数が本部に伝わった",
+      "point": "アレルギー対応食・介護食・乳幼児食・宗教食(ハラール・ベジ)は備蓄にない場合が多く、外部調達に時間がかかる。早めに必要数を本部に伝えると、配布開始までに間に合う。7大アレルゲン(卵・牛乳・小麦・そば・落花生・えび・かに)は誤配でアナフィラキシーになる。本人カードで照合する仕組み(su-010・phase 3)とも連動。",
+      "troubles": [
+        {
+          "label": "対応食なし",
+          "action": "別自治体・支援団体要請"
+        },
+        {
+          "label": "本人記入無し",
+          "action": "巡回で再確認"
+        },
+        {
+          "label": "数が読めない",
+          "action": "概数で要請"
+        }
+      ],
+      "depends_on": [
+        "su-002"
+      ]
+    },
+    {
+      "id": "vu-015",
+      "role": "vulnerable-support",
+      "phase": 1,
+      "order": 8,
+      "title": "多文化・宗教対応を確認",
+      "duration_minutes": 4,
+      "instructions": [
+        "外国人避難者の国籍を確認",
+        "食事・祈祷・着替えの希望を聞く",
+        "対応可否を本部と協議"
+      ],
+      "completion_condition": "外国人避難者のニーズが本部に共有された",
+      "point": "外国人避難者は『言葉が通じない+文化的ニーズ』の二重の不安を抱える。食事(ハラール・ベジ・宗教戒律)・祈祷スペース(イスラム教は1日5回)・着替え場所(ベール着用への配慮)が主要ニーズ。本人に直接聞く時はやさしい日本語+ボイストラ翻訳が有効。大使館・領事館の連絡先も用意。観光客の場合は帰国手続きも案内。",
+      "troubles": [
+        {
+          "label": "言葉通じない",
+          "action": "ボイストラ翻訳"
+        },
+        {
+          "label": "対応食なし",
+          "action": "su-014に連携"
+        },
+        {
+          "label": "祈祷場所なし",
+          "action": "個室を時間貸し"
+        }
+      ],
+      "depends_on": [
+        "vu-004"
+      ]
+    },
+    {
+      "id": "mh-018",
+      "role": "medical-hygiene",
+      "phase": 2,
+      "order": 13,
+      "title": "連携先一覧を作る",
+      "duration_minutes": 4,
+      "instructions": [
+        "病院・薬局・保健所の番号を集める",
+        "本部・福祉避難所・社協も追加",
+        "救護室の壁に貼る"
+      ],
+      "completion_condition": "連携先一覧が救護室の壁にある",
+      "point": "phase 2 では『すぐ電話すべき相手』を整理する。病院(救急・外来)・薬局(処方箋・モバイルファーマシー)・保健所(感染症)・本部(自治体)・福祉避難所・社協(ボランティア)が主要。番号を覚えなくても見れば分かる状態にする。手書きでも OK。新しい連絡先が出るたびに追加する運用に。",
+      "troubles": [
+        {
+          "label": "番号が分からず",
+          "action": "情報班に調査依頼"
+        },
+        {
+          "label": "紙が足りない",
+          "action": "段ボール直書き"
+        },
+        {
+          "label": "頻繁に変更",
+          "action": "鉛筆で書く"
+        }
+      ],
+      "depends_on": [
+        "mh-008"
+      ]
+    },
+    {
+      "id": "su-015",
+      "role": "supplies",
+      "phase": 2,
+      "order": 12,
+      "title": "生活用水を確保する",
+      "duration_minutes": 5,
+      "instructions": [
+        "プール水・井戸水の使用可否確認",
+        "バケツや容器を集める",
+        "『生活用水』表示で別管理"
+      ],
+      "completion_condition": "生活用水の供給場所と容器が用意された",
+      "point": "断水時は『飲料水と生活用水の区別』が命を分ける。飲料水は備蓄ペットボトル限定、生活用水(トイレ流し・洗濯・清掃)はプール水・井戸水・河川水で確保する。混ぜると感染症リスクが上がるので、容器は『飲料用』『生活用』で色分けかラベル付け。プール水を手洗いに使わないルールを徹底(mh-005と連携)。",
+      "troubles": [
+        {
+          "label": "プール水汚染",
+          "action": "井戸水・他施設要請"
+        },
+        {
+          "label": "容器不足",
+          "action": "ペットボトル切る"
+        },
+        {
+          "label": "汲み手不足",
+          "action": "避難者協力呼びかけ"
+        }
+      ],
+      "depends_on": [
+        "su-004"
+      ]
+    },
+    {
+      "id": "mh-019",
+      "role": "medical-hygiene",
+      "phase": 3,
+      "order": 17,
+      "title": "ゴミ・汚物の長期処理計画",
+      "duration_minutes": 5,
+      "instructions": [
+        "ゴミ集積場所を再確認",
+        "汲取り業者と連絡を取る",
+        "回収頻度の計画を立てる"
+      ],
+      "completion_condition": "ゴミ・汚物の長期処理計画が固まった",
+      "point": "phase 3 以降はゴミと汚物が急増する。トイレの携帯トイレ袋・嘔吐物処理袋・医療系ゴミは特に厄介。汲取り業者と災害協定があれば優先的に回収してもらえる。臭い対策に防虫剤・脱臭剤を備えておく。集積場所は風下・離れた場所に。感染症発生時は専用ゴミ袋(色違い)で分別する。",
+      "troubles": [
+        {
+          "label": "業者連絡つかず",
+          "action": "本部経由で要請"
+        },
+        {
+          "label": "ゴミ溢れる",
+          "action": "屋外仮置きへ"
+        },
+        {
+          "label": "悪臭",
+          "action": "脱臭剤・密封袋"
+        }
+      ],
+      "depends_on": [
+        "mh-010"
+      ]
+    },
+    {
+      "id": "su-016",
+      "role": "supplies",
+      "phase": 3,
+      "order": 16,
+      "title": "個別ニーズを集約する",
+      "duration_minutes": 5,
+      "instructions": [
+        "乳児食・離乳食・介護食を確認",
+        "嚥下困難・低カリウム食も",
+        "本部に追加要請する"
+      ],
+      "completion_condition": "個別ニーズと必要数が本部に伝わった",
+      "point": "phase 3 では『普通の食事だと食べられない人』のニーズが顕在化する。乳児(粉ミルク・離乳食)・高齢者(きざみ食・ペースト食・嚥下困難)・腎臓病(低カリウム・低タンパク)・糖尿病(カロリー制限)等が代表例。栄養士・管理栄養士の派遣も合わせて要請。個別ニーズは家族から聞き出すと早い。",
+      "troubles": [
+        {
+          "label": "対応食なし",
+          "action": "栄養士派遣要請"
+        },
+        {
+          "label": "本人申告なし",
+          "action": "巡回で確認"
+        },
+        {
+          "label": "種類多すぎ",
+          "action": "緊急度順に対応"
+        }
+      ],
+      "depends_on": [
+        "su-010"
+      ]
+    },
+    {
+      "id": "vu-016",
+      "role": "vulnerable-support",
+      "phase": 3,
+      "order": 16,
+      "title": "ボランティアと連携する",
+      "duration_minutes": 5,
+      "instructions": [
+        "社協と毎日連絡を取る",
+        "必要なスキル(介助・通訳等)を伝える",
+        "受入後はビブス着用で活動"
+      ],
+      "completion_condition": "ボランティア要請と受入準備が整った",
+      "point": "phase 3 では運営班だけでは回らなくなる。社協(社会福祉協議会)が運営する災害ボランティアセンター経由で受入る。スキル指定で要請すると『介護士・保育士・通訳・大工・栄養士・心理士』等が来てくれる。受入時は5分のブリーフィング(本日のお願い・禁止事項・撤収時刻)と、ビブス・腕章で『受入済み』を明示する。",
+      "troubles": [
+        {
+          "label": "ボラ未到着",
+          "action": "本部経由で再要請"
+        },
+        {
+          "label": "ニーズに合わず",
+          "action": "別スキル指定で再要請"
+        },
+        {
+          "label": "ボラ多すぎ",
+          "action": "翌日以降に分散"
+        }
+      ],
+      "depends_on": [
+        "vu-009"
       ]
     }
   ]
