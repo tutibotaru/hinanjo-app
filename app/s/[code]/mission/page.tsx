@@ -445,6 +445,12 @@ function MissionView({
               </div>
             )}
 
+            <p className="mt-4 text-[10px] leading-relaxed text-slate-400">
+              ※ 本アプリは内閣府ガイドライン等を参考にした行動指針で、
+              医療判断・法的判断を行うものではありません。
+              現場の専門家(医療従事者・行政等)の指示を優先してください。
+            </p>
+
             {actionError && (
               <p
                 role="alert"
@@ -464,8 +470,9 @@ function MissionView({
               type="button"
               onClick={handleDone}
               disabled={acting}
+              aria-label={`「${current.step.title}」を完了として記録する`}
               style={{ minHeight: 52 }}
-              className="w-full rounded-lg bg-emerald-600 px-4 py-3 text-base font-bold text-white shadow-sm transition-colors hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-50"
+              className="w-full rounded-lg bg-emerald-600 px-4 py-3 text-base font-bold text-white shadow-sm transition-colors hover:bg-emerald-700 active:bg-emerald-800 focus-visible:ring-4 focus-visible:ring-emerald-300 disabled:opacity-50"
             >
               {acting ? "保存中…" : "✓ できた"}
             </button>
@@ -474,8 +481,9 @@ function MissionView({
                 type="button"
                 onClick={() => setShowTrouble(true)}
                 disabled={acting}
+                aria-label="困ったを報告する(理由を選んで送信)"
                 style={{ minHeight: 48 }}
-                className="flex-1 rounded-lg border-2 border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-amber-500 hover:bg-amber-50 disabled:opacity-50"
+                className="flex-1 rounded-lg border-2 border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-amber-500 hover:bg-amber-50 focus-visible:ring-4 focus-visible:ring-amber-200 disabled:opacity-50"
               >
                 困った
               </button>
@@ -483,8 +491,9 @@ function MissionView({
                 type="button"
                 onClick={handleSkip}
                 disabled={acting}
+                aria-label={`「${current.step.title}」をスキップして次のステップへ進む`}
                 style={{ minHeight: 48 }}
-                className="flex-1 rounded-lg border-2 border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-slate-500 disabled:opacity-50"
+                className="flex-1 rounded-lg border-2 border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-slate-500 focus-visible:ring-4 focus-visible:ring-slate-200 disabled:opacity-50"
               >
                 スキップ
               </button>

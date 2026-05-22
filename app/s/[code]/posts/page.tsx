@@ -204,8 +204,17 @@ function ComposeForm({
         }
         rows={3}
         maxLength={500}
+        aria-describedby="post-content-note"
         className="mt-3 w-full resize-none rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
       />
+      <p
+        id="post-content-note"
+        className="mt-2 text-[10px] leading-relaxed text-slate-500"
+      >
+        ・実名・住所・電話番号などの個人情報は書かない。
+        ・人を傷つける書き込み・誹謗中傷は禁止。
+        ・参加コードを知る人なら誰でも見えます。
+      </p>
 
       {error && (
         <p
@@ -246,7 +255,13 @@ function Timeline({
   }
 
   return (
-    <ul className="space-y-3">
+    <ul
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions"
+      aria-label="共有タイムラインの投稿一覧。新着が追加されると読み上げます"
+      className="space-y-3"
+    >
       {posts.map((post) => {
         const author = post.participant_id
           ? (nameById.get(post.participant_id) ?? "不明")

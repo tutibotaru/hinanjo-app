@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -61,7 +62,10 @@ function HomeForm() {
   return (
     <main className="min-h-screen bg-slate-50 px-5 py-8 sm:px-8">
       <div className="mx-auto max-w-md">
-        <header className="mb-10">
+        <header className="mb-8">
+          <div className="mb-3 inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+            ⚠ 訓練用ベータ版
+          </div>
           <p className="text-xs font-semibold tracking-widest text-emerald-700">
             避難所サポート
           </p>
@@ -120,6 +124,39 @@ function HomeForm() {
             QR の下に書かれた参加コードを上に入力してください。
           </p>
         </div>
+
+        <footer className="mt-10 border-t border-slate-200 pt-6 text-xs text-slate-500">
+          <p className="leading-relaxed">
+            本アプリは避難所運営訓練を支援する試験版(ベータ)です。
+            実災害時の本番運用には対応していません。
+            内容は地域の防災計画・自治体マニュアル・現場の判断と
+            合わせてご利用ください。
+          </p>
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+            <Link href="/policy" className="text-emerald-700 underline">
+              利用規約・プライバシー・免責
+            </Link>
+            <a
+              href="https://github.com/tutibotaru/hinanjo-app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-700 underline"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://github.com/tutibotaru/hinanjo-app/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-700 underline"
+            >
+              お問い合わせ
+            </a>
+          </div>
+          <p className="mt-3 text-[10px] text-slate-400">
+            提供: 個人開発・避難所サポート(オープンソース)
+          </p>
+        </footer>
       </div>
     </main>
   );

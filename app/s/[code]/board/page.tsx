@@ -355,26 +355,42 @@ function BoardView({ session, code }: { session: Session; code: string }) {
 function StatusIcon({ status }: { status: string | null }) {
   if (status === "done") {
     return (
-      <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-white">
-        ✓
+      <span
+        role="img"
+        aria-label="完了"
+        className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-white"
+      >
+        <span aria-hidden="true">✓</span>
       </span>
     );
   }
   if (status === "skipped") {
     return (
-      <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-slate-300 text-xs text-slate-700">
-        ⊘
+      <span
+        role="img"
+        aria-label="スキップ"
+        className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-slate-300 text-xs text-slate-700"
+      >
+        <span aria-hidden="true">⊘</span>
       </span>
     );
   }
   if (status === "stuck") {
     return (
-      <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-white">
-        !
+      <span
+        role="img"
+        aria-label="困った"
+        className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-white"
+      >
+        <span aria-hidden="true">!</span>
       </span>
     );
   }
   return (
-    <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 border-slate-300 text-xs" />
+    <span
+      role="img"
+      aria-label="未着手"
+      className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 border-slate-300 text-xs"
+    />
   );
 }
