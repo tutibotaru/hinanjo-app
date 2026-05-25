@@ -8,6 +8,7 @@ import { useStepProgress } from "@/lib/hooks/useStepProgress";
 import { useParticipants } from "@/lib/hooks/useParticipants";
 import BottomNav from "@/components/bottom-nav";
 import TrainingBanner from "@/components/training-banner";
+import InviteButton from "@/components/invite-button";
 import stepsData from "@/data/steps.json";
 
 type Session = {
@@ -148,6 +149,7 @@ function BoardView({ session, code }: { session: Session; code: string }) {
               </p>
             </div>
             <div className="flex flex-shrink-0 flex-col items-end gap-1 text-xs">
+              <InviteButton code={code} />
               <Link
                 href={`/s/${code}/finish`}
                 className="text-emerald-700 underline"

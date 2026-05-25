@@ -8,6 +8,7 @@ import { useStepProgress } from "@/lib/hooks/useStepProgress";
 import { useParticipants } from "@/lib/hooks/useParticipants";
 import BottomNav from "@/components/bottom-nav";
 import TrainingBanner from "@/components/training-banner";
+import InviteButton from "@/components/invite-button";
 import stepsData from "@/data/steps.json";
 import type { StepStatus } from "@/lib/types/database";
 
@@ -304,6 +305,7 @@ function MissionView({
               </p>
             </div>
             <div className="flex flex-shrink-0 flex-col gap-1">
+              <InviteButton code={code} />
               <Link
                 href={`/s/${code}/nickname`}
                 style={{ minHeight: 40 }}

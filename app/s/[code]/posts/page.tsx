@@ -7,6 +7,7 @@ import { useSharedPosts } from "@/lib/hooks/useSharedPosts";
 import { useParticipants } from "@/lib/hooks/useParticipants";
 import BottomNav from "@/components/bottom-nav";
 import TrainingBanner from "@/components/training-banner";
+import InviteButton from "@/components/invite-button";
 import type { SharedPost, PostType } from "@/lib/types/database";
 
 type Session = {
@@ -100,15 +101,22 @@ function PostsView({
       <TrainingBanner mode={session.mode} />
       <div className="mx-auto max-w-md">
         <header className="border-b border-slate-200 bg-white px-5 py-3">
-          <p className="text-xs font-semibold tracking-widest text-emerald-700">
-            共有タイムライン
-          </p>
-          <h1 className="mt-1 text-lg font-bold text-slate-900">
-            {session.name}
-          </h1>
-          <p className="mt-0.5 text-xs text-slate-500">
-            コード {code} / フェーズ {session.phase}
-          </p>
+          <div className="flex items-baseline justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold tracking-widest text-emerald-700">
+                共有タイムライン
+              </p>
+              <h1 className="mt-1 text-lg font-bold text-slate-900">
+                {session.name}
+              </h1>
+              <p className="mt-0.5 text-xs text-slate-500">
+                コード {code} / フェーズ {session.phase}
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <InviteButton code={code} />
+            </div>
+          </div>
         </header>
 
         <div className="space-y-4 px-5 py-5">
