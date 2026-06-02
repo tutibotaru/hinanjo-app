@@ -122,6 +122,13 @@ export default function AdminNewPage() {
               ⚠ 訓練用ベータ版です。実災害時の本番運用にはまだ対応していません。
               意味のないセッションを乱立させないでください。
             </p>
+            <p className="mt-2 text-xs text-slate-600">
+              初めての方は{" "}
+              <Link href="/guide" className="text-emerald-700 underline">
+                📖 主催者向けガイド
+              </Link>{" "}
+              で 30/60/120 分の進行台本をチェックしてください。
+            </p>
           </header>
           <form onSubmit={handleGateSubmit} className="space-y-4">
             <label className="flex items-start gap-2 text-sm text-slate-700">

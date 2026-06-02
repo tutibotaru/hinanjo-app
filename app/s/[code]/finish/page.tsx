@@ -358,6 +358,12 @@ function FinishView({ session, code }: { session: Session; code: string }) {
             全体ボードに戻る
           </Link>
           <Link
+            href="/guide"
+            className="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-center text-sm font-semibold text-emerald-800 hover:bg-emerald-100"
+          >
+            📖 次回に向けて: 主催者向けガイドを読む
+          </Link>
+          <Link
             href="/"
             className="rounded-lg bg-slate-100 px-4 py-3 text-center text-sm font-semibold text-slate-600 hover:bg-slate-200"
           >

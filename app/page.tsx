@@ -152,13 +152,22 @@ function HomeForm() {
             新しい避難所セッションを開設して、QR コードを発行できます。
             自治会や PTA、防災訓練の主催者向けです。
           </p>
-          <Link
-            href="/admin/new"
-            style={{ minHeight: 48 }}
-            className="mt-3 flex items-center justify-center rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50"
-          >
-            ➕ 新しい避難所を開設(運営者向け)
-          </Link>
+          <div className="mt-3 flex flex-col gap-2">
+            <Link
+              href="/admin/new"
+              style={{ minHeight: 48 }}
+              className="flex items-center justify-center rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50"
+            >
+              ➕ 新しい避難所を開設
+            </Link>
+            <Link
+              href="/guide"
+              style={{ minHeight: 44 }}
+              className="flex items-center justify-center rounded-md border border-emerald-300 bg-emerald-50 px-3 text-xs font-semibold text-emerald-800 hover:bg-emerald-100"
+            >
+              📖 訓練主催者向けガイドを読む(30/60/120 分シナリオ付き)
+            </Link>
+          </div>
         </section>
 
         <footer className="mt-10 border-t border-slate-200 pt-6 text-xs text-slate-500">
@@ -169,6 +178,9 @@ function HomeForm() {
             合わせてご利用ください。
           </p>
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+            <Link href="/guide" className="text-emerald-700 underline">
+              主催者向けガイド
+            </Link>
             <Link href="/policy" className="text-emerald-700 underline">
               利用規約・プライバシー・免責
             </Link>
