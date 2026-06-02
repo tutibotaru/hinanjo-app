@@ -315,37 +315,47 @@ function MissionView({
           <div className="flex items-center gap-3">
             <span
               aria-hidden
-              className="inline-block h-3 w-3 rounded-full"
+              className="inline-block h-3 w-3 flex-shrink-0 rounded-full"
               style={{ backgroundColor: role.color }}
             />
-            <div className="flex-1">
-              <p className="text-sm font-bold text-slate-900">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-bold text-slate-900">
                 {participant.nickname} さん / {role.name}
               </p>
-              <p className="text-sm text-slate-500">
-                仲間 {sameRoleCount}人 / {session.name} ({code})
-              </p>
-              <p className="mt-0.5 text-xs leading-snug text-slate-400">
-                他班 {otherSummary.activeBands}/{otherSummary.totalOthers}班{" "}
-                計{otherSummary.people}人(詳細はボード)
+              <p className="truncate text-xs text-slate-500">
+                {session.name}・仲間 {sameRoleCount}人
+                {otherSummary.people > 0 && (
+                  <span className="text-slate-400">
+                    {" "}・他班 {otherSummary.people}人
+                  </span>
+                )}
               </p>
             </div>
-            <div className="flex flex-shrink-0 flex-col gap-1">
+            <div className="flex flex-shrink-0 items-center gap-1">
               <InviteButton code={code} />
-              <Link
-                href={`/s/${code}/nickname`}
-                style={{ minHeight: 40 }}
-                className="flex items-center justify-center rounded-md border border-slate-200 px-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
-              >
-                なまえ
-              </Link>
-              <Link
-                href={`/s/${code}/role`}
-                style={{ minHeight: 40 }}
-                className="flex items-center justify-center rounded-md border border-slate-200 px-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
-              >
-                役割
-              </Link>
+              <details className="relative">
+                <summary
+                  aria-label="メニュー"
+                  style={{ minHeight: 40, minWidth: 40 }}
+                  className="flex cursor-pointer list-none items-center justify-center rounded-md border border-slate-200 px-2 text-base font-bold text-slate-500 hover:bg-slate-50 [&::-webkit-details-marker]:hidden"
+                >
+                  ⋯
+                </summary>
+                <div className="absolute right-0 z-30 mt-1 w-32 rounded-md border border-slate-200 bg-white shadow-lg">
+                  <Link
+                    href={`/s/${code}/nickname`}
+                    className="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                  >
+                    なまえ変更
+                  </Link>
+                  <Link
+                    href={`/s/${code}/role`}
+                    className="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                  >
+                    役割変更
+                  </Link>
+                </div>
+              </details>
             </div>
           </div>
         </header>
@@ -466,24 +476,23 @@ function MissionView({
             </div>
 
             {current.step.point && (
-              <div className="mt-3 flex gap-2 rounded-lg border border-sky-200 bg-sky-50 p-3">
-                <span aria-hidden className="text-base leading-none">
-                  💡
-                </span>
-                <div>
-                  <p className="text-xs font-semibold text-sky-700">ポイント</p>
-                  <p className="mt-1 text-sm text-sky-900">
-                    {current.step.point}
-                  </p>
-                </div>
-              </div>
+              <details className="mt-3 rounded-lg border border-sky-200 bg-sky-50 p-3 [&_summary::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-xs font-semibold text-sky-700">
+                  <span className="flex items-center gap-2">
+                    <span aria-hidden>💡</span>
+                    ポイント・解説を読む
+                  </span>
+                  <span aria-hidden className="text-sky-500">
+                    ▼
+                  </span>
+                </summary>
+                <p className="mt-2 text-sm leading-relaxed text-sky-900">
+                  {current.step.point}
+                </p>
+              </details>
             )}
 
-            <p className="mt-4 text-[10px] leading-relaxed text-slate-400">
-              ※ 本アプリは内閣府ガイドライン等を参考にした行動指針で、
-              医療判断・法的判断を行うものではありません。
-              現場の専門家(医療従事者・行政等)の指示を優先してください。
-            </p>
+            <DisclaimerOnce />
 
             {actionError && (
               <p
@@ -577,5 +586,37 @@ function MissionView({
 
       <BottomNav code={code} sessionId={session.id} />
     </main>
+  );
+}
+
+// 免責文は初回のみ表示し、一度見たら以後は省略する。
+// WHY: 全ステップで毎回出すと情報過多。1度認識してもらえれば十分。
+function DisclaimerOnce() {
+  const KEY = "hinanjo:disclaimer:seen";
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (localStorage.getItem(KEY) !== "true") setShow(true);
+  }, []);
+  function dismiss() {
+    localStorage.setItem(KEY, "true");
+    setShow(false);
+  }
+  if (!show) return null;
+  return (
+    <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-3">
+      <p className="text-[11px] leading-relaxed text-slate-600">
+        ⚠ 本アプリは内閣府ガイドライン等を参考にした行動指針で、
+        医療判断・法的判断を行うものではありません。
+        現場の専門家(医療従事者・行政等)の指示を優先してください。
+      </p>
+      <button
+        type="button"
+        onClick={dismiss}
+        className="mt-2 text-[10px] font-semibold text-slate-500 underline"
+      >
+        了解しました(以後表示しない)
+      </button>
+    </div>
   );
 }

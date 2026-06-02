@@ -556,36 +556,23 @@ export default function ManagePage() {
             </div>
           </section>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-4">
-            <h2 className="text-sm font-bold text-slate-900">モード</h2>
-            <p className="mt-1 text-xs text-slate-500">
-              訓練モードでは画面上部に黄色の帯が出ます。
-            </p>
-            <button
-              type="button"
-              onClick={toggleMode}
-              disabled={busy}
-              style={{ minHeight: 48 }}
-              className="mt-3 w-full rounded-lg border-2 border-slate-300 bg-white text-sm font-semibold text-slate-700 disabled:opacity-40"
-            >
-              {session.mode === "training"
-                ? "本番モードに切り替える"
-                : "訓練モードに切り替える"}
-            </button>
-          </section>
-
-          <section className="rounded-lg border border-slate-200 bg-white p-4">
-            <h2 className="text-sm font-bold text-slate-900">
-              参加用 QR / リンク
-            </h2>
-            <p className="mt-1 text-xs text-slate-500">
-              印刷せずに、この画面を見せる/リンクを送るだけでも参加できます。
+          <details className="rounded-lg border border-slate-200 bg-white p-4 [&_summary::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-900">
+                参加用 QR / リンク
+              </h2>
+              <span aria-hidden className="text-slate-400">
+                ▼
+              </span>
+            </summary>
+            <p className="mt-2 text-xs text-slate-500">
+              「招待」ボタン(右上)からでもアクセス可能。印刷したい時にこちらを使ってください。
             </p>
             <div className="mt-3 flex flex-col items-center">
               {joinUrl && (
                 <QRCodeSVG
                   value={joinUrl}
-                  size={180}
+                  size={160}
                   level="M"
                   marginSize={2}
                   style={{ display: "block" }}
@@ -608,7 +595,33 @@ export default function ManagePage() {
                 印刷用ページを開く
               </Link>
             </div>
-          </section>
+          </details>
+
+          <details className="rounded-lg border border-slate-200 bg-white p-4 [&_summary::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-900">
+                モード切替
+              </h2>
+              <span aria-hidden className="text-slate-400">
+                ▼
+              </span>
+            </summary>
+            <p className="mt-2 text-xs text-slate-500">
+              現在「{session.mode === "training" ? "訓練モード" : "本番モード"}」。
+              訓練モードでは画面上部に黄色の帯が出ます。
+            </p>
+            <button
+              type="button"
+              onClick={toggleMode}
+              disabled={busy}
+              style={{ minHeight: 48 }}
+              className="mt-3 w-full rounded-lg border-2 border-slate-300 bg-white text-sm font-semibold text-slate-700 disabled:opacity-40"
+            >
+              {session.mode === "training"
+                ? "本番モードに切り替える"
+                : "訓練モードに切り替える"}
+            </button>
+          </details>
 
           <section className="rounded-lg border border-rose-200 bg-rose-50 p-4">
             <h2 className="text-sm font-bold text-rose-900">

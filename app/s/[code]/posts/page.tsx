@@ -242,17 +242,9 @@ function ComposeForm({
         }
         rows={3}
         maxLength={500}
-        aria-describedby="post-content-note"
         className="mt-3 w-full resize-none rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
       />
-      <p
-        id="post-content-note"
-        className="mt-2 text-[10px] leading-relaxed text-slate-500"
-      >
-        ・実名・住所・電話番号などの個人情報は書かない。
-        ・人を傷つける書き込み・誹謗中傷は禁止。
-        ・参加コードを知る人なら誰でも見えます。
-      </p>
+      <PostingRulesOnce />
 
       {error && (
         <p
@@ -351,5 +343,39 @@ function Timeline({
         );
       })}
     </ul>
+  );
+}
+
+// 投稿時の注意は初回のみ表示。
+// WHY: 毎回見えていると目障り。1回認識してもらえれば十分。
+function PostingRulesOnce() {
+  const KEY = "hinanjo:posting-rules:seen";
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (localStorage.getItem(KEY) !== "true") setShow(true);
+  }, []);
+  function dismiss() {
+    localStorage.setItem(KEY, "true");
+    setShow(false);
+  }
+  if (!show) return null;
+  return (
+    <div className="mt-2 rounded-md border border-slate-200 bg-slate-50 p-2">
+      <p className="text-[10px] leading-relaxed text-slate-600">
+        ・実名・住所・電話番号などの個人情報は書かない
+        <br />
+        ・誹謗中傷・差別的な表現は禁止
+        <br />
+        ・参加コードを知る人は全員見られます
+      </p>
+      <button
+        type="button"
+        onClick={dismiss}
+        className="mt-1 text-[10px] font-semibold text-slate-500 underline"
+      >
+        了解(以後表示しない)
+      </button>
+    </div>
   );
 }
