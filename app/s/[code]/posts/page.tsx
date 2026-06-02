@@ -8,6 +8,7 @@ import { useParticipants } from "@/lib/hooks/useParticipants";
 import BottomNav from "@/components/bottom-nav";
 import TrainingBanner from "@/components/training-banner";
 import InviteButton from "@/components/invite-button";
+import ElapsedTime from "@/components/elapsed-time";
 import type { SharedPost, PostType } from "@/lib/types/database";
 
 type Session = {
@@ -16,6 +17,7 @@ type Session = {
   qr_code: string;
   phase: number;
   mode: string;
+  simulated_start_at: string | null;
 };
 type StoredParticipant = { id: string; nickname: string };
 
@@ -55,7 +57,7 @@ export default function PostsPage() {
       const supabase = createClient();
       const { data: session } = await supabase
         .from("sessions")
-        .select("id, name, qr_code, phase, mode")
+        .select("id, name, qr_code, phase, mode, simulated_start_at")
         .eq("qr_code", code)
         .maybeSingle();
       if (!session) {
@@ -79,7 +81,7 @@ export default function PostsPage() {
 }
 
 function PostsView({
-  session,
+  session: initialSession,
   participantId,
   code,
 }: {
@@ -87,6 +89,28 @@ function PostsView({
   participantId: string;
   code: string;
 }) {
+  const [session, setSession] = useState<Session>(initialSession);
+  useEffect(() => setSession(initialSession), [initialSession]);
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`posts-session-${initialSession.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "sessions",
+          filter: `id=eq.${initialSession.id}`,
+        },
+        (payload) => setSession(payload.new as Session),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [initialSession.id]);
+
   const { posts } = useSharedPosts(session.id);
   const { participants } = useParticipants(session.id);
 
@@ -112,6 +136,12 @@ function PostsView({
               <p className="mt-0.5 text-xs text-slate-500">
                 コード {code} / フェーズ {session.phase}
               </p>
+              <div className="mt-1">
+                <ElapsedTime
+                  startedAt={session.simulated_start_at}
+                  compact
+                />
+              </div>
             </div>
             <div className="flex-shrink-0">
               <InviteButton code={code} />
@@ -274,25 +304,47 @@ function Timeline({
         const author = post.participant_id
           ? (nameById.get(post.participant_id) ?? "不明")
           : "匿名";
+        const isEvent = post.type === "event";
         return (
           <li
             key={post.id}
-            className="rounded-lg border border-slate-200 bg-white p-3"
+            className={
+              isEvent
+                ? "rounded-lg border-2 border-rose-300 bg-rose-50 p-3 shadow-sm"
+                : "rounded-lg border border-slate-200 bg-white p-3"
+            }
           >
             <div className="flex items-center gap-2 text-xs">
               <span
                 className={`rounded px-1.5 py-0.5 font-bold ${
-                  post.type === "trouble"
-                    ? "bg-amber-100 text-amber-800"
-                    : "bg-emerald-100 text-emerald-800"
+                  isEvent
+                    ? "bg-rose-600 text-white"
+                    : post.type === "trouble"
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-emerald-100 text-emerald-800"
                 }`}
               >
-                {post.type === "trouble" ? "困った" : "発見"}
+                {isEvent
+                  ? "🚨 災害イベント"
+                  : post.type === "trouble"
+                    ? "困った"
+                    : "発見"}
               </span>
-              <span className="font-semibold text-slate-900">{author}</span>
+              {!isEvent && (
+                <span className="font-semibold text-slate-900">{author}</span>
+              )}
+              {isEvent && (
+                <span className="font-semibold text-rose-700">本部から</span>
+              )}
               <span className="text-slate-400">{timeAgo(post.created_at)}</span>
             </div>
-            <p className="mt-2 whitespace-pre-wrap text-sm text-slate-800">
+            <p
+              className={
+                isEvent
+                  ? "mt-2 whitespace-pre-wrap text-sm font-semibold text-rose-900"
+                  : "mt-2 whitespace-pre-wrap text-sm text-slate-800"
+              }
+            >
               {post.content}
             </p>
           </li>

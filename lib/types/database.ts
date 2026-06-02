@@ -1,12 +1,21 @@
 // このプロジェクトの DB スキーマと対応する型定義。
-// migrations/001_initial_schema.sql と必ず同期させること。
+// migrations/001 + 004 + 006 + 007 + 009 と同期させること。
 // 将来は `supabase gen types typescript` での自動生成に置き換える。
 
-export type Phase = 0 | 1 | 2;
+export type Phase = 0 | 1 | 2 | 3;
 export type Mode = "training" | "production";
-export type RoleId = "general-affairs" | "facility" | "information";
+// migration 006 で 7値に拡張済
+export type RoleId =
+  | "general-affairs"
+  | "facility"
+  | "information"
+  | "medical-hygiene"
+  | "supplies"
+  | "vulnerable-support"
+  | "leader";
 export type StepStatus = "done" | "skipped" | "stuck";
-export type PostType = "trouble" | "finding";
+// migration 009 で 'event'(災害イベント注入)を追加
+export type PostType = "trouble" | "finding" | "event";
 
 export type Session = {
   id: string;
@@ -15,6 +24,8 @@ export type Session = {
   phase: Phase;
   mode: Mode;
   created_at: string;
+  // migration 009: 訓練タイマーの発災開始時刻。null は未開始。
+  simulated_start_at: string | null;
 };
 
 export type Participant = {

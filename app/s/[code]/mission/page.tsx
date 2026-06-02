@@ -9,6 +9,7 @@ import { useParticipants } from "@/lib/hooks/useParticipants";
 import BottomNav from "@/components/bottom-nav";
 import TrainingBanner from "@/components/training-banner";
 import InviteButton from "@/components/invite-button";
+import ElapsedTime from "@/components/elapsed-time";
 import stepsData from "@/data/steps.json";
 import type { StepStatus } from "@/lib/types/database";
 
@@ -18,6 +19,7 @@ type Session = {
   qr_code: string;
   phase: number;
   mode: string;
+  simulated_start_at: string | null;
 };
 type Participant = {
   id: string;
@@ -79,7 +81,7 @@ export default function MissionPage() {
       const [sessionRes, participantRes] = await Promise.all([
         supabase
           .from("sessions")
-          .select("id, name, qr_code, phase, mode")
+          .select("id, name, qr_code, phase, mode, simulated_start_at")
           .eq("qr_code", code)
           .maybeSingle(),
         supabase
@@ -133,7 +135,7 @@ export default function MissionPage() {
 }
 
 function MissionView({
-  session,
+  session: initialSession,
   participant,
   role,
   code,
@@ -146,6 +148,30 @@ function MissionView({
   const [actionError, setActionError] = useState<string | null>(null);
   const [showTrouble, setShowTrouble] = useState(false);
   const [acting, setActing] = useState(false);
+
+  // WHY: 本部が「訓練タイマー開始」「フェーズ変更」を行った瞬間に
+  // 参加者画面にも反映するため、session を Realtime で更新する State にする。
+  const [session, setSession] = useState<Session>(initialSession);
+  useEffect(() => setSession(initialSession), [initialSession]);
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`mission-session-${initialSession.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "sessions",
+          filter: `id=eq.${initialSession.id}`,
+        },
+        (payload) => setSession(payload.new as Session),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [initialSession.id]);
 
   const { byStepId } = useStepProgress(session.id);
   const { participants } = useParticipants(session.id);
@@ -325,8 +351,14 @@ function MissionView({
         </header>
 
         <div className="bg-white px-5 py-3">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <ElapsedTime startedAt={session.simulated_start_at} />
+            <span className="text-xs font-semibold text-slate-500">
+              フェーズ {session.phase}
+            </span>
+          </div>
           <div className="flex items-baseline justify-between text-xs text-slate-600">
-            <span>フェーズ {session.phase}</span>
+            <span>進捗</span>
             <span>
               {completedCount} / {totalForRole} 完了
             </span>

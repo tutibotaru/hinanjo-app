@@ -9,6 +9,7 @@ import { useParticipants } from "@/lib/hooks/useParticipants";
 import BottomNav from "@/components/bottom-nav";
 import TrainingBanner from "@/components/training-banner";
 import InviteButton from "@/components/invite-button";
+import ElapsedTime from "@/components/elapsed-time";
 import stepsData from "@/data/steps.json";
 
 type Session = {
@@ -17,6 +18,7 @@ type Session = {
   qr_code: string;
   phase: number;
   mode: string;
+  simulated_start_at: string | null;
 };
 type Role = {
   id: string;
@@ -78,7 +80,7 @@ export default function BoardPage() {
       const supabase = createClient();
       const { data: session } = await supabase
         .from("sessions")
-        .select("id, name, qr_code, phase, mode")
+        .select("id, name, qr_code, phase, mode, simulated_start_at")
         .eq("qr_code", code)
         .maybeSingle();
 
@@ -103,7 +105,37 @@ export default function BoardPage() {
   return <BoardView session={ctx.session} code={ctx.code} />;
 }
 
-function BoardView({ session, code }: { session: Session; code: string }) {
+function BoardView({
+  session: initialSession,
+  code,
+}: {
+  session: Session;
+  code: string;
+}) {
+  // WHY: 本部の操作(タイマー開始・フェーズ変更等)を即時反映するため
+  // session を Realtime 購読する。
+  const [session, setSession] = useState<Session>(initialSession);
+  useEffect(() => setSession(initialSession), [initialSession]);
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`board-session-${initialSession.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "sessions",
+          filter: `id=eq.${initialSession.id}`,
+        },
+        (payload) => setSession(payload.new as Session),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [initialSession.id]);
+
   const { byStepId } = useStepProgress(session.id);
   const { participants } = useParticipants(session.id);
 
@@ -147,6 +179,12 @@ function BoardView({ session, code }: { session: Session; code: string }) {
               <p className="mt-0.5 text-xs text-slate-500">
                 コード {code} / フェーズ {session.phase}
               </p>
+              <div className="mt-1">
+                <ElapsedTime
+                  startedAt={session.simulated_start_at}
+                  compact
+                />
+              </div>
             </div>
             <div className="flex flex-shrink-0 flex-col items-end gap-1 text-xs">
               <InviteButton code={code} />
