@@ -350,6 +350,25 @@ function FinishView({ session, code }: { session: Session; code: string }) {
           </p>
         </section>
 
+        <section className="mt-6 px-5">
+          <h2 className="mb-2 text-sm font-semibold text-slate-700">
+            📥 記録を持ち帰る
+          </h2>
+          <p className="text-xs leading-relaxed text-slate-500">
+            進捗の全記録を CSV でダウンロードできます。
+            自治体への報告書や次回訓練の改善資料としてご活用ください。
+            個人情報(ニックネームのみ)が含まれるので取り扱いに注意してください。
+          </p>
+          <CsvDownloadButton
+            sessionName={session.name}
+            code={code}
+            progress={progress}
+            participants={participants}
+            steps={allSteps}
+            roles={roles}
+          />
+        </section>
+
         <div className="mt-8 flex flex-col gap-2 px-5">
           <Link
             href={`/s/${code}/board`}
@@ -403,5 +422,110 @@ function StatCard({
       </p>
       {hint && <p className="mt-0.5 text-[10px] opacity-60">{hint}</p>}
     </div>
+  );
+}
+
+// CSV ダウンロードボタン。
+// WHY: 訓練主催者が自治体報告・次回改善に使えるよう、生データを CSV で
+// 持ち帰れるようにする。ニックネームだけの弱い個人情報だが、扱いに注意
+// する旨を上のセクションで注意喚起している。
+// WHY BOM 付き UTF-8: Excel で日本語が文字化けしない標準対応。
+type Participant = { id: string; nickname: string; role: string | null };
+function CsvDownloadButton({
+  sessionName,
+  code,
+  progress,
+  participants,
+  steps,
+  roles,
+}: {
+  sessionName: string;
+  code: string;
+  progress: Array<{
+    step_id: string;
+    participant_id: string | null;
+    status: string;
+    trouble_label: string | null;
+    stuck_count?: number;
+    completed_at: string;
+  }>;
+  participants: Participant[];
+  steps: Step[];
+  roles: Role[];
+}) {
+  function handleDownload() {
+    const stepById = new Map(steps.map((s) => [s.id, s]));
+    const roleById = new Map(roles.map((r) => [r.id, r]));
+    const participantById = new Map(participants.map((p) => [p.id, p]));
+
+    const header = [
+      "参加者",
+      "班",
+      "ステップID",
+      "ステップタイトル",
+      "phase",
+      "状態",
+      "完了時刻",
+      "困った回数",
+      "困った理由",
+    ];
+    const escape = (v: string | number | null | undefined) => {
+      if (v === null || v === undefined) return "";
+      const s = String(v);
+      if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+      return s;
+    };
+
+    const rows = progress.map((p) => {
+      const step = stepById.get(p.step_id);
+      const participant = p.participant_id
+        ? participantById.get(p.participant_id)
+        : null;
+      const role = step ? roleById.get(step.role) : null;
+      return [
+        participant?.nickname ?? "(不明)",
+        role?.name ?? step?.role ?? "",
+        p.step_id,
+        step?.title ?? "",
+        step?.phase ?? "",
+        p.status,
+        p.completed_at,
+        p.stuck_count ?? (p.status === "stuck" ? 1 : 0),
+        p.trouble_label ?? "",
+      ]
+        .map(escape)
+        .join(",");
+    });
+
+    const csv = [header.join(","), ...rows].join("\r\n");
+    // UTF-8 BOM 付きで Excel の文字化けを防ぐ
+    const blob = new Blob(["﻿" + csv], {
+      type: "text/csv;charset=utf-8;",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+    // 半角英数・ひらがな・カタカナ・漢字以外を - に置換(ファイル名として安全)
+    const safeName = sessionName.replace(
+      /[^A-Za-z0-9ぁ-んァ-ヶー一-龠]+/g,
+      "-",
+    );
+    a.href = url;
+    a.download = `hinanjo_${safeName}_${code}_${date}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleDownload}
+      style={{ minHeight: 48 }}
+      className="mt-3 w-full rounded-lg border-2 border-slate-300 bg-white px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50"
+    >
+      📥 進捗を CSV でダウンロード
+    </button>
   );
 }

@@ -2,7 +2,7 @@
 // migrations/001 + 004 + 006 + 007 + 009 と同期させること。
 // 将来は `supabase gen types typescript` での自動生成に置き換える。
 
-export type Phase = 0 | 1 | 2 | 3;
+export type Phase = 0 | 1 | 2 | 3 | 4;
 export type Mode = "training" | "production";
 // migration 006 で 7値に拡張済
 export type RoleId =

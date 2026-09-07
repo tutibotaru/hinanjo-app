@@ -20,8 +20,9 @@ const PHASE_LABELS: Record<number, string> = {
   1: "開設初期(15分〜1時間)",
   2: "応急運営(1〜2時間)",
   3: "安定運営(1日〜)",
+  4: "撤収(1週間〜1ヶ月)",
 };
-const PHASE_MAX = 3;
+const PHASE_MAX = 4;
 
 // 災害イベント注入のテンプレート。本部から発火して全員に通知する。
 // content は共有タイムラインに表示される本文。short はボタンの説明文。
